@@ -34,6 +34,12 @@ class Settings(BaseSettings):
     # Logging
     log_level: str = "INFO"
 
+    # Dry-run mode: generate responses but don't send emails
+    dry_run: bool = False
+
+    # Max conversations to track simultaneously
+    max_active_conversations: int = 50
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
 

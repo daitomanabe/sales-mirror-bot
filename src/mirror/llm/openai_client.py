@@ -78,18 +78,26 @@ class LlmClient:
         # Build context from conversation history
         messages = [{"role": "system", "content": system_prompt}]
 
+        # Load generation guide and negotiation strategy
+        generation_guide = _load_prompt("generate_response.txt")
+        negotiation_strategy = _load_prompt("negotiation_strategy.txt")
+
         # Add stage-specific instruction
-        messages.append({
-            "role": "system",
-            "content": (
-                f"現在のステージ: {conv.stage.value}\n"
-                f"指示: {stage_instruction}\n"
-                f"相手の会社: {conv.extracted_info.company_name}\n"
-                f"担当者: {conv.extracted_info.contact_name}\n"
-                f"サービス種類: {conv.extracted_info.service_type}\n"
-                f"予算: {conv.extracted_info.budget_low}〜{conv.extracted_info.budget_high}円\n"
-            ),
-        })
+        stage_context = (
+            f"現在のステージ: {conv.stage.value}\n"
+            f"指示: {stage_instruction}\n"
+            f"相手の会社: {conv.extracted_info.company_name}\n"
+            f"担当者: {conv.extracted_info.contact_name}\n"
+            f"サービス種類: {conv.extracted_info.service_type}\n"
+            f"予算: {conv.extracted_info.budget_low}〜{conv.extracted_info.budget_high}円\n"
+            f"プラットフォーム: {conv.extracted_info.platform}\n"
+        )
+        if generation_guide:
+            stage_context += f"\n---\n{generation_guide}"
+        if conv.stage == ConversationStage.NEGOTIATION and negotiation_strategy:
+            stage_context += f"\n---\n交渉戦略:\n{negotiation_strategy}"
+
+        messages.append({"role": "system", "content": stage_context})
 
         # Add conversation history
         for entry in conv.history[-10:]:  # Keep last 10 messages for context
