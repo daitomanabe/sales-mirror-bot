@@ -40,6 +40,11 @@ class Settings(BaseSettings):
     # Max conversations to track simultaneously
     max_active_conversations: int = 50
 
+    # Dashboard sync (Cloudflare Workers)
+    dashboard_url: str = ""
+    dashboard_api_token: str = ""
+    dashboard_sync_interval: int = 300  # seconds
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
 

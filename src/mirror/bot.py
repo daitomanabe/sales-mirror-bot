@@ -13,6 +13,7 @@ from mirror.mail.imap_client import ImapMonitor
 from mirror.mail.smtp_client import SmtpSender
 from mirror.models import Conversation, ConversationStage, ParsedEmail
 from mirror.parser.email_parser import EmailParser
+from mirror.sync import DashboardSync
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +25,11 @@ class MirrorBot:
         self._smtp = SmtpSender()
         self._parser = EmailParser()
         self._handler = StageHandler()
+        self._sync: DashboardSync | None = None
+        if settings.dashboard_url and settings.dashboard_api_token:
+            self._sync = DashboardSync(
+                settings.dashboard_url, settings.dashboard_api_token
+            )
 
     async def start(self) -> None:
         """Start the bot: initialize DB and run poll + follow-up loops."""
@@ -33,10 +39,15 @@ class MirrorBot:
         else:
             logger.info("MirrorBot starting in LIVE mode")
 
-        await asyncio.gather(
+        tasks = [
             self._imap.poll_loop(self._handle_email),
             self._follow_up_loop(),
-        )
+        ]
+        if self._sync:
+            tasks.append(self._dashboard_sync_loop())
+            logger.info("Dashboard sync enabled: %s", settings.dashboard_url)
+
+        await asyncio.gather(*tasks)
 
     async def process_single(self, email: ParsedEmail) -> str | None:
         """Process a single email and return the generated response (for testing).
@@ -206,6 +217,15 @@ class MirrorBot:
 
             except Exception:
                 logger.exception("Error in follow-up loop")
+
+    async def _dashboard_sync_loop(self) -> None:
+        """Periodically sync data to the Cloudflare dashboard."""
+        while True:
+            await asyncio.sleep(settings.dashboard_sync_interval)
+            try:
+                await self._sync.sync_all(self._db)
+            except Exception:
+                logger.exception("Dashboard sync error")
 
     @staticmethod
     def _resolve_thread_id(email: ParsedEmail) -> str:
