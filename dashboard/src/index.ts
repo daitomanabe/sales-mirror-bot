@@ -3,6 +3,7 @@ import { cors } from 'hono/cors'
 
 type Bindings = {
   DB: D1Database
+  ASSETS: Fetcher
   DASHBOARD_TITLE: string
   API_TOKEN?: string
 }

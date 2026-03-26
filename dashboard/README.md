@@ -12,7 +12,7 @@ npm install
 
 # Create D1 database
 wrangler d1 create mirror-db
-# Copy the database_id to wrangler.toml
+# Copy the database_id to wrangler.jsonc
 
 # Initialize schema
 wrangler d1 execute mirror-db --file=./schema.sql
