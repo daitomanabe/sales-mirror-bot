@@ -186,6 +186,45 @@ class Database:
         await self._db.commit()
         return cursor.lastrowid
 
+    # ── Dedup / Rate Limiting ─────────────────────────────────
+
+    async def has_message(self, message_id: str) -> bool:
+        """Check if we've already processed a message with this ID."""
+        async with self._db.execute(
+            "SELECT 1 FROM messages WHERE message_id = ? LIMIT 1", (message_id,)
+        ) as cursor:
+            return await cursor.fetchone() is not None
+
+    async def count_outbound_since(self, since: datetime) -> int:
+        """Count outbound messages sent since a given time (for rate limiting)."""
+        async with self._db.execute(
+            """SELECT COUNT(*) as cnt FROM messages
+               WHERE direction = 'outbound' AND sent_at >= ?""",
+            (since.isoformat(),),
+        ) as cursor:
+            row = await cursor.fetchone()
+            return row["cnt"] if row else 0
+
+    async def get_all_conversations(self) -> list[Conversation]:
+        """Return all conversations (for export)."""
+        async with self._db.execute(
+            "SELECT * FROM conversations ORDER BY updated_at DESC"
+        ) as cursor:
+            rows = await cursor.fetchall()
+            return [self._row_to_conversation(r) for r in rows]
+
+    async def get_messages_for_conversation(
+        self, conversation_id: int
+    ) -> list[dict]:
+        """Return all messages for a conversation."""
+        async with self._db.execute(
+            """SELECT * FROM messages WHERE conversation_id = ?
+               ORDER BY sent_at ASC""",
+            (conversation_id,),
+        ) as cursor:
+            rows = await cursor.fetchall()
+            return [dict(r) for r in rows]
+
     # ── Helpers ────────────────────────────────────────────────
 
     @staticmethod

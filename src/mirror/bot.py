@@ -70,6 +70,24 @@ class MirrorBot:
             email.subject,
         )
 
+        # Step 0a: Duplicate check
+        if email.message_id and await self._db.has_message(email.message_id):
+            logger.info("Duplicate message, skipping: %s", email.message_id)
+            return None
+
+        # Step 0b: Blocklist check
+        if self._is_blocked(email.from_addr):
+            logger.info("Blocked sender: %s", email.from_addr)
+            return None
+
+        # Step 0c: Rate limit check (max 20 outbound emails per hour)
+        from datetime import timedelta
+        one_hour_ago = datetime.now() - timedelta(hours=1)
+        recent_count = await self._db.count_outbound_since(one_hour_ago)
+        if recent_count >= 20:
+            logger.warning("Rate limit reached (%d/hr), deferring", recent_count)
+            return None
+
         # Step 1: Check if this is a sales email
         if not EmailParser.is_sales_email(email):
             logger.info("Skipping non-sales email: %s", email.subject)
@@ -226,6 +244,17 @@ class MirrorBot:
                 await self._sync.sync_all(self._db)
             except Exception:
                 logger.exception("Dashboard sync error")
+
+    @staticmethod
+    def _is_blocked(email_addr: str) -> bool:
+        """Check if a sender is in the blocklist."""
+        # Blocked domains/addresses — add patterns here as needed
+        blocked_domains = {
+            "noreply", "no-reply", "mailer-daemon",
+            "postmaster", "bounce",
+        }
+        local_part = email_addr.split("@")[0].lower()
+        return any(b in local_part for b in blocked_domains)
 
     @staticmethod
     def _resolve_thread_id(email: ParsedEmail) -> str:
