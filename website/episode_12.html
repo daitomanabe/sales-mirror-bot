@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EP-12 — データ分析SaaS 弱点指摘から逆提案でPoC受注</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --black: #0a0a0a;
+  --white: #f5f5f0;
+  --gray-1: #1a1a1a;
+  --gray-2: #2a2a2a;
+  --gray-3: #4a4a4a;
+  --gray-4: #7a7a7a;
+  --gray-5: #aaaaaa;
+  --accent: #ff3333;
+  --green: #00cc66;
+  --blue: #4488ff;
+  --grid: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  background: var(--black);
+  color: var(--white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 900px; margin: 0 auto; padding: 0 calc(var(--grid) * 4); }
+
+.back {
+  display: inline-block;
+  padding: calc(var(--grid) * 4) 0;
+  color: var(--gray-4);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+.back:hover { color: var(--white); }
+
+.ep-header {
+  padding: calc(var(--grid) * 6) 0;
+  border-bottom: 1px solid var(--gray-2);
+}
+
+.ep-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--gray-4);
+  letter-spacing: 2px;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.ep-title {
+  font-size: clamp(24px, 4vw, 42px);
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1.2;
+  margin-bottom: calc(var(--grid) * 3);
+}
+
+.ep-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border-radius: 2px;
+  margin-bottom: calc(var(--grid) * 3);
+}
+.badge-success { background: rgba(0,204,102,0.15); color: var(--green); border: 1px solid rgba(0,204,102,0.3); }
+.badge-failure { background: rgba(255,51,51,0.15); color: var(--accent); border: 1px solid rgba(255,51,51,0.3); }
+.badge-warning { background: rgba(255,200,50,0.15); color: #ffc832; border: 1px solid rgba(255,200,50,0.3); }
+
+.ep-summary {
+  font-size: 15px;
+  color: var(--gray-5);
+  line-height: 1.7;
+  margin-bottom: calc(var(--grid) * 4);
+}
+
+.ep-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px;
+  background: var(--gray-2);
+  border: 1px solid var(--gray-2);
+  margin-bottom: calc(var(--grid) * 8);
+}
+
+.ep-stat {
+  background: var(--black);
+  padding: calc(var(--grid) * 3);
+  text-align: center;
+}
+
+.ep-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+.ep-stat-value.green { color: var(--green); }
+.ep-stat-value.red { color: var(--accent); }
+
+.ep-stat-label {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gray-4);
+  margin-top: 4px;
+}
+
+/* Exchange */
+.exchange {
+  padding: calc(var(--grid) * 4) 0;
+  border-bottom: 1px solid var(--gray-2);
+}
+
+.exchange-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.exchange-round {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+}
+.round-in { color: var(--blue); }
+.round-out { color: var(--green); }
+.round-sys { color: var(--accent); }
+
+.exchange-stage {
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--gray-4);
+  background: var(--gray-1);
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+
+.exchange-from {
+  font-size: 12px;
+  color: var(--gray-5);
+  margin-bottom: 4px;
+}
+
+.exchange-subject {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.exchange-body {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--gray-6);
+  white-space: pre-wrap;
+  padding: calc(var(--grid) * 3);
+  background: var(--gray-1);
+  border-left: 3px solid var(--gray-3);
+  border-radius: 0 4px 4px 0;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.exchange-body.inbound { border-left-color: var(--blue); }
+.exchange-body.outbound { border-left-color: var(--green); }
+.exchange-body.system { border-left-color: var(--accent); }
+
+.exchange-apis {
+  margin-top: calc(var(--grid) * 2);
+}
+
+.api-call {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--gray-4);
+  padding: 4px 0;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.api-name { color: var(--gray-5); }
+.api-cost { color: var(--accent); font-size: 10px; }
+.api-desc { color: var(--gray-3); font-size: 10px; }
+
+/* Post-mortem */
+.postmortem {
+  padding: calc(var(--grid) * 6) 0;
+  border-top: 2px solid var(--accent);
+  margin-top: calc(var(--grid) * 4);
+}
+
+.postmortem h3 {
+  font-size: 16px;
+  color: var(--accent);
+  margin-bottom: calc(var(--grid) * 3);
+  letter-spacing: 1px;
+}
+
+.postmortem ul {
+  list-style: none;
+  padding: 0;
+}
+
+.postmortem li {
+  font-size: 13px;
+  color: var(--gray-5);
+  padding: 6px 0;
+  padding-left: 16px;
+  position: relative;
+}
+
+.postmortem li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--gray-3);
+}
+
+.footer {
+  padding: calc(var(--grid) * 6) 0;
+  text-align: center;
+  color: var(--gray-3);
+  font-size: 11px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="back" href="index.html">← ALL EPISODES</a>
+
+  <div class="ep-header">
+    <div class="ep-id">EP-12</div>
+    <div class="ep-badge badge-success">SUCCESS</div>
+    <h1 class="ep-title">データ分析SaaS 弱点指摘から逆提案でPoC受注</h1>
+    <p class="ep-summary">Tableau/Looker競合のデータ分析SaaSの営業に対し、ダッシュボードのAI機能の弱さを指摘。「弊社のAIで自然言語クエリ機能を追加できる」と逆提案し、¥350万のPoC受注に成功。</p>
+  </div>
+
+  <div class="ep-stats">
+    <div class="ep-stat">
+      <div class="ep-stat-value">10</div>
+      <div class="ep-stat-label">Rounds</div>
+    </div>
+    <div class="ep-stat">
+      <div class="ep-stat-value">14d</div>
+      <div class="ep-stat-label">Duration</div>
+    </div>
+    <div class="ep-stat">
+      <div class="ep-stat-value green">¥3.5M</div>
+      <div class="ep-stat-label">Revenue</div>
+    </div>
+    <div class="ep-stat">
+      <div class="ep-stat-value">¥72</div>
+      <div class="ep-stat-label">API Cost</div>
+    </div>
+  </div>
+
+  
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R1 ← INBOUND</span>
+        <span class="exchange-stage">initial_response</span>
+      </div>
+      <div class='exchange-from'>高橋 直人 &lt;takahashi@datavis-cloud-example.co.jp&gt;</div>
+      <div class="exchange-subject">【DataVis Cloud】データ分析プラットフォームのご紹介</div>
+      <div class="exchange-body inbound">真鍋様
+
+初めてご連絡いたします。
+株式会社データビズクラウドの高橋と申します。
+
+弊社はデータ分析・可視化プラットフォーム「DataVis Cloud」を
+提供しております。Tableau/Lookerと同等の機能を、
+月額1/3のコストでご利用いただけます。
+
+【DataVis Cloudの特長】
+・ノーコードでダッシュボード作成
+・50以上のデータソースに対応（AWS/GCP/Azure）
+・リアルタイムデータ連携
+・日本語UIと日本語サポート
+・月額¥50,000〜（10ユーザー）
+
+現在、2週間の無料トライアルをご提供しております。
+御社のデータ活用状況について、15分ほどお話しさせていただけませんか。
+
+データビズクラウド株式会社
+セールスマネージャー 高橋 直人</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">EmailParser.is_sales_email()</span> <span class="api-desc">// キーワードヒューリスティクスで営業メール判定</span></div>
+<div class="api-call"><span class="api-name">EmailParser.extract()</span> <span class="api-cost">$0.03</span> <span class="api-desc">// メールから構造化情報を抽出</span></div>
+<div class="api-call"><span class="api-name">Database.upsert_conversation()</span> <span class="api-desc">// 新規会話をSQLiteに保存</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R2 → OUTBOUND</span>
+        <span class="exchange-stage">initial_response</span>
+      </div>
+      <div class='exchange-from'>真鍋 大度 &lt;bot@mmmmm-example.co.jp&gt;</div>
+      <div class="exchange-subject">Re: 【DataVis Cloud】データ分析プラットフォームのご紹介</div>
+      <div class="exchange-body outbound">高橋様
+
+株式会社mmmmmの真鍋です。
+ご連絡ありがとうございます。
+
+データ分析プラットフォーム、ちょうど関心を持っていたところです。
+弊社ではクライアント向けにAIソリューションを提供しており、
+ダッシュボード連携のニーズが増えています。
+
+いくつかお伺いしたいのですが：
+
+1. 自然言語でのデータクエリ機能はありますか？
+   （例：「先月の売上トップ10を出して」と入力して可視化）
+2. APIでのダッシュボード埋め込みは可能ですか？
+3. カスタムAIモデルとの連携実績はありますか？
+
+15分のお打ち合わせ、ぜひお願いします。
+来週でしたらいつでも対応可能です。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span> <span class="api-desc">// 初回返信を生成。AI機能の有無を探る質問を含める（逆提案への布石）</span></div>
+<div class="api-call"><span class="api-name">SmtpSender.send()</span> <span class="api-desc">// SMTP送信。In-Reply-To/Referencesヘッダでスレッド維持</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R3 ← INBOUND</span>
+        <span class="exchange-stage">meeting_setup</span>
+      </div>
+      <div class='exchange-from'>高橋 直人 &lt;takahashi@datavis-cloud-example.co.jp&gt;</div>
+      <div class="exchange-subject">Re: 【DataVis Cloud】ご質問への回答</div>
+      <div class="exchange-body inbound">真鍋様
+
+ご質問ありがとうございます。
+
+1. 自然言語クエリについて
+   現在は対応しておりません。ロードマップには入っていますが、
+   実装は来年以降の予定です。
+   現状はSQLライクなクエリビルダーをご用意しています。
+
+2. API埋め込み
+   はい、iframe埋め込みとREST APIでのデータ取得に対応しています。
+
+3. カスタムAIモデル連携
+   こちらも現時点では未対応です。
+   BI分析はルールベースで行っております。
+
+お打ち合わせの件、ありがとうございます。
+6月10日（火）11:00〜はいかがでしょうか。
+デモ環境もご用意いたします。
+
+ちなみに、御社ではどのようなデータ分析の用途を
+想定されていますか？</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">ConversationStateMachine.advance()</span> <span class="api-desc">// initial_response → meeting_setup に遷移</span></div>
+<div class="api-call"><span class="api-name">GPT-4o（製品弱点分析）</span> <span class="api-cost">$0.05</span> <span class="api-desc">// 相手製品の弱点を構造化分析。自然言語クエリ未対応・AIモデル連携未対応を検出</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R4 → OUTBOUND</span>
+        <span class="exchange-stage">meeting_setup</span>
+      </div>
+      <div class='exchange-from'>真鍋 大度 &lt;bot@mmmmm-example.co.jp&gt;</div>
+      <div class="exchange-subject">Re: 【DataVis Cloud】ご質問への回答 — ご提案</div>
+      <div class="exchange-body outbound">高橋様
+
+お世話になっております。真鍋です。
+詳細なご回答ありがとうございます。
+
+6月10日（火）11:00〜承知しました。
+
+さて、ご回答を拝見して一つ提案がございます。
+
+弊社はLLM/NLP技術を専門としており、
+自然言語からSQLやグラフを自動生成するエンジンを開発しています。
+
+御社のDataVis Cloudに弊社の自然言語クエリエンジンを
+組み込むことで、以下が実現できると考えます：
+
+・「先月の売上推移をグラフにして」→ 自動でダッシュボード生成
+・「前年比で売上が下がった地域は？」→ 自動でフィルタ＋可視化
+・日本語/英語のマルチリンガル対応
+
+Tableau（Ask Data）やLooker（Gemini連携）が
+すでにAI機能を実装している中、
+御社の「来年以降」というロードマップは競争上厳しいのではないかと
+率直に感じました。
+
+弊社との協業でこの課題を早期に解決できる可能性があります。
+6月10日のお打ち合わせで、デモとあわせて
+この話もさせていただけませんか。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.07</span> <span class="api-desc">// 逆提案メールを生成。相手製品の弱点を指摘しつつ協業を提案</span></div>
+<div class="api-call"><span class="api-name">SmtpSender.send()</span> <span class="api-desc">// SMTP送信</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R5 ← INBOUND</span>
+        <span class="exchange-stage">proposal</span>
+      </div>
+      <div class='exchange-from'>高橋 直人 &lt;takahashi@datavis-cloud-example.co.jp&gt;</div>
+      <div class="exchange-subject">Re: 【DataVis Cloud】— 協業のご提案について</div>
+      <div class="exchange-body inbound">真鍋様
+
+大変興味深いご提案です。
+正直なところ、自然言語クエリ機能の遅れは
+社内でも課題認識があります。
+
+TableauのAsk DataやPower BIのCopilot連携を見て、
+弊社も早急に対応したいと考えていたところです。
+
+ぜひ6月10日に詳しくお聞かせください。
+弊社のCTO松田も同席させていただきます。
+
+技術的な観点で事前にいくつか：
+1. どのLLMを使用していますか（GPT-4/Claude等）
+2. SQLの自動生成精度はどの程度ですか
+3. オンプレ環境での動作は可能ですか
+
+デモがあればぜひ拝見したいです。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">ConversationStateMachine.advance()</span> <span class="api-desc">// meeting_setup → proposal に遷移</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R6 → OUTBOUND</span>
+        <span class="exchange-stage">proposal</span>
+      </div>
+      <div class='exchange-from'>真鍋 大度 &lt;bot@mmmmm-example.co.jp&gt;</div>
+      <div class="exchange-subject">Re: 【DataVis Cloud】— 技術詳細と提案書</div>
+      <div class="exchange-body outbound">高橋様
+
+CTO松田様のご同席、ありがとうございます。
+
+ご質問への回答と提案書を送付いたします。
+
+【技術回答】
+1. LLM: GPT-4o / Claude 3.5を用途に応じて使い分け。
+   オンプレの場合はオープンソースLLM（Llama等）も対応可能
+2. SQL生成精度: ベンチマーク環境でexact match 82%、
+   execution accuracy 91%（Spider benchmark準拠）
+3. オンプレ: Docker/Kubernetes環境で動作可能
+
+【提案概要】
+Phase 1 - PoC（2ヶ月）: ¥3,500,000
+・DataVis CloudのAPIに自然言語クエリエンジンを接続
+・デモ用データセットで精度検証
+・日本語/英語対応
+・ダッシュボード自動生成のプロトタイプ
+
+Phase 2 - 本開発（別途見積もり、Phase 1完了後）
+・本番環境への組み込み
+・パフォーマンスチューニング
+・エンタープライズ向けセキュリティ対応
+
+詳細な提案書を添付いたします。
+6月10日にデモをお見せいたします。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">GPT-4o（提案書ドラフト生成）</span> <span class="api-cost">$0.1</span> <span class="api-desc">// 自然言語クエリエンジンのPoC提案書を生成。技術仕様・スケジュール・価格を含む</span></div>
+<div class="api-call"><span class="api-name">NegotiationEngine.init_state()</span> <span class="api-desc">// 交渉状態を初期化。target=3,500,000, floor=2,500,000</span></div>
+<div class="api-call"><span class="api-name">SmtpSender.send()</span> <span class="api-desc">// 提案書PDFを添付して送信</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R7 ← INBOUND</span>
+        <span class="exchange-stage">negotiation</span>
+      </div>
+      <div class='exchange-from'>高橋 直人 &lt;takahashi@datavis-cloud-example.co.jp&gt;</div>
+      <div class="exchange-subject">Re: 【DataVis Cloud】— デモ後のフィードバック</div>
+      <div class="exchange-body inbound">真鍋様
+
+本日のデモ、大変ありがとうございました。
+松田（CTO）も「想像以上の精度」と好印象でした。
+
+社内で検討した結果、PoCを前向きに進めたいと考えています。
+ただ、いくつか確認・交渉させてください。
+
+1. 価格について
+   ¥350万はPoC としてはやや高いと感じています。
+   ¥280万程度に調整いただけないでしょうか。
+
+2. 成果物の知的財産権
+   PoC段階で開発されたコードの権利は弊社に帰属しますか。
+
+3. スケジュール
+   7月開始、8月末完了は可能ですか。
+
+お手数ですが、ご検討をお願いいたします。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">NegotiationEngine.analyze_offer()</span> <span class="api-cost">$0.03</span> <span class="api-desc">// 価格交渉シグナルの検出。値引き要求¥280万</span></div>
+<div class="api-call"><span class="api-name">NegotiationEngine.calc_counter_offer()</span> <span class="api-desc">// カウンターオファー計算。20%の値引きは大きいため中間値で折り合う</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R8 → OUTBOUND</span>
+        <span class="exchange-stage">negotiation</span>
+      </div>
+      <div class='exchange-from'>真鍋 大度 &lt;bot@mmmmm-example.co.jp&gt;</div>
+      <div class="exchange-subject">Re: 【DataVis Cloud】— 条件調整のご提案</div>
+      <div class="exchange-body outbound">高橋様
+
+お世話になっております。真鍋です。
+デモをお楽しみいただけたようで何よりです。
+
+ご要望について検討いたしました。
+
+1. 価格
+   ¥280万は弊社としても厳しいのですが、
+   御社との長期的な協業を見据えて¥350万で
+   お受けしたいと思います。
+   ただし、PoC成功時にPhase 2を弊社に優先発注
+   いただけることを条件とさせてください。
+
+2. 知的財産権
+   PoC段階のコードは共同著作物として共有とし、
+   弊社の汎用NLQエンジン部分は弊社に帰属、
+   DataVis Cloud固有のカスタマイズ部分は御社に帰属、
+   としたいと思います。
+
+3. スケジュール
+   7月1日開始、8月29日完了で対応可能です。
+
+この条件でよろしければ、契約書の準備に進みます。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">NegotiationEngine.build_negotiation_context()</span> <span class="api-desc">// 交渉コンテキスト生成。価格維持+長期契約オプションで対応</span></div>
+<div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.07</span> <span class="api-desc">// 交渉戦略プロンプト（negotiation_strategy.txt）を含む返信生成。価格維持だが長期協業のメリットを提示</span></div>
+<div class="api-call"><span class="api-name">SmtpSender.send()</span> <span class="api-desc">// SMTP送信</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R9 ← INBOUND</span>
+        <span class="exchange-stage">contract</span>
+      </div>
+      <div class='exchange-from'>高橋 直人 &lt;takahashi@datavis-cloud-example.co.jp&gt;</div>
+      <div class="exchange-subject">Re: 【DataVis Cloud】— 条件承諾</div>
+      <div class="exchange-body inbound">真鍋様
+
+社内で協議した結果、提示いただいた条件で合意いたします。
+
+・金額: ¥3,500,000（税別）
+・知的財産権: 共同著作物（汎用部分=御社、カスタム部分=弊社）
+・スケジュール: 7月1日〜8月29日
+・Phase 2優先発注: 承諾
+
+契約書の準備をお願いいたします。
+弊社法務のCC: legal@datavis-cloud-example.co.jp
+
+7月のキックオフに向けて、API仕様書を事前にお送りします。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">NegotiationEngine.analyze_offer()</span> <span class="api-cost">$0.03</span> <span class="api-desc">// 合意シグナル検出: acceptance_signal=true</span></div>
+<div class="api-call"><span class="api-name">ConversationStateMachine.advance()</span> <span class="api-desc">// negotiation → contract に遷移</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R10 → OUTBOUND</span>
+        <span class="exchange-stage">billing</span>
+      </div>
+      <div class='exchange-from'>真鍋 大度 &lt;bot@mmmmm-example.co.jp&gt;</div>
+      <div class="exchange-subject">【契約書・請求書送付】自然言語クエリエンジン PoC</div>
+      <div class="exchange-body outbound">高橋様
+
+お世話になっております。真鍋です。
+ご合意いただきありがとうございます。
+
+契約書をクラウドサインで送付いたしました。
+legal@datavis-cloud-example.co.jp にもCCしております。
+
+【契約概要】
+・業務内容: DataVis Cloud向け自然言語クエリエンジンのPoC開発
+・契約金額: ¥3,500,000（税別）
+・期間: 2026年7月1日〜2026年8月29日
+・知的財産権: 共同著作物（汎用NLQエンジン=弊社、カスタマイズ部分=御社）
+
+着手金の請求書を添付いたします。
+・金額: ¥1,925,000（税込、契約金額の50%）
+・お支払い条件: 請求書受領後30日以内
+
+API仕様書をいただき次第、技術検証を開始いたします。
+キックオフミーティングの日程を別途調整させてください。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">ContractGenerator.generate()</span> <span class="api-desc">// 業務委託契約書をレンダリング。金額¥3,500,000、期間2ヶ月、知的財産権共有条項を含む</span></div>
+<div class="api-call"><span class="api-name">InvoiceGenerator.generate()</span> <span class="api-desc">// 着手金請求書をレンダリング。金額¥1,750,000+税</span></div>
+<div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span> <span class="api-desc">// 契約送付メールの生成</span></div>
+<div class="api-call"><span class="api-name">Database.save_document()</span> <span class="api-desc">// 契約書・請求書をDB保存</span></div>
+<div class="api-call"><span class="api-name">DashboardSync.sync_all()</span> <span class="api-desc">// Cloudflare D1にデータ同期</span></div>
+</div>
+    </div>
+    
+
+  
+
+  <div class="footer">SALES MIRROR BOT — 営業ボットには、営業ボットを。</div>
+</div>
+</body>
+</html>

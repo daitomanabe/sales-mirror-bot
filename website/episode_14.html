@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EP-14 — 補助金コンサルタント → AI開発案件に補助金を組み合わせるパートナー契約</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --black: #0a0a0a;
+  --white: #f5f5f0;
+  --gray-1: #1a1a1a;
+  --gray-2: #2a2a2a;
+  --gray-3: #4a4a4a;
+  --gray-4: #7a7a7a;
+  --gray-5: #aaaaaa;
+  --accent: #ff3333;
+  --green: #00cc66;
+  --blue: #4488ff;
+  --grid: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  background: var(--black);
+  color: var(--white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 900px; margin: 0 auto; padding: 0 calc(var(--grid) * 4); }
+
+.back {
+  display: inline-block;
+  padding: calc(var(--grid) * 4) 0;
+  color: var(--gray-4);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+.back:hover { color: var(--white); }
+
+.ep-header {
+  padding: calc(var(--grid) * 6) 0;
+  border-bottom: 1px solid var(--gray-2);
+}
+
+.ep-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--gray-4);
+  letter-spacing: 2px;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.ep-title {
+  font-size: clamp(24px, 4vw, 42px);
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1.2;
+  margin-bottom: calc(var(--grid) * 3);
+}
+
+.ep-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border-radius: 2px;
+  margin-bottom: calc(var(--grid) * 3);
+}
+.badge-success { background: rgba(0,204,102,0.15); color: var(--green); border: 1px solid rgba(0,204,102,0.3); }
+.badge-failure { background: rgba(255,51,51,0.15); color: var(--accent); border: 1px solid rgba(255,51,51,0.3); }
+.badge-warning { background: rgba(255,200,50,0.15); color: #ffc832; border: 1px solid rgba(255,200,50,0.3); }
+
+.ep-summary {
+  font-size: 15px;
+  color: var(--gray-5);
+  line-height: 1.7;
+  margin-bottom: calc(var(--grid) * 4);
+}
+
+.ep-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px;
+  background: var(--gray-2);
+  border: 1px solid var(--gray-2);
+  margin-bottom: calc(var(--grid) * 8);
+}
+
+.ep-stat {
+  background: var(--black);
+  padding: calc(var(--grid) * 3);
+  text-align: center;
+}
+
+.ep-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+.ep-stat-value.green { color: var(--green); }
+.ep-stat-value.red { color: var(--accent); }
+
+.ep-stat-label {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gray-4);
+  margin-top: 4px;
+}
+
+/* Exchange */
+.exchange {
+  padding: calc(var(--grid) * 4) 0;
+  border-bottom: 1px solid var(--gray-2);
+}
+
+.exchange-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.exchange-round {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+}
+.round-in { color: var(--blue); }
+.round-out { color: var(--green); }
+.round-sys { color: var(--accent); }
+
+.exchange-stage {
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--gray-4);
+  background: var(--gray-1);
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+
+.exchange-from {
+  font-size: 12px;
+  color: var(--gray-5);
+  margin-bottom: 4px;
+}
+
+.exchange-subject {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.exchange-body {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--gray-6);
+  white-space: pre-wrap;
+  padding: calc(var(--grid) * 3);
+  background: var(--gray-1);
+  border-left: 3px solid var(--gray-3);
+  border-radius: 0 4px 4px 0;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.exchange-body.inbound { border-left-color: var(--blue); }
+.exchange-body.outbound { border-left-color: var(--green); }
+.exchange-body.system { border-left-color: var(--accent); }
+
+.exchange-apis {
+  margin-top: calc(var(--grid) * 2);
+}
+
+.api-call {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--gray-4);
+  padding: 4px 0;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.api-name { color: var(--gray-5); }
+.api-cost { color: var(--accent); font-size: 10px; }
+.api-desc { color: var(--gray-3); font-size: 10px; }
+
+/* Post-mortem */
+.postmortem {
+  padding: calc(var(--grid) * 6) 0;
+  border-top: 2px solid var(--accent);
+  margin-top: calc(var(--grid) * 4);
+}
+
+.postmortem h3 {
+  font-size: 16px;
+  color: var(--accent);
+  margin-bottom: calc(var(--grid) * 3);
+  letter-spacing: 1px;
+}
+
+.postmortem ul {
+  list-style: none;
+  padding: 0;
+}
+
+.postmortem li {
+  font-size: 13px;
+  color: var(--gray-5);
+  padding: 6px 0;
+  padding-left: 16px;
+  position: relative;
+}
+
+.postmortem li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--gray-3);
+}
+
+.footer {
+  padding: calc(var(--grid) * 6) 0;
+  text-align: center;
+  color: var(--gray-3);
+  font-size: 11px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="back" href="index.html">← ALL EPISODES</a>
+
+  <div class="ep-header">
+    <div class="ep-id">EP-14</div>
+    <div class="ep-badge badge-success">SUCCESS</div>
+    <h1 class="ep-title">補助金コンサルタント → AI開発案件に補助金を組み合わせるパートナー契約</h1>
+    <p class="ep-summary">IT導入補助金の申請サポート営業に対し、「弊社クライアント向けに補助金を組み込んだAI開発パッケージを共同販売しよう」と逆提案。補助金で企業負担を1/3に下げ、受注率を大幅向上。</p>
+  </div>
+
+  <div class="ep-stats">
+    <div class="ep-stat">
+      <div class="ep-stat-value">12</div>
+      <div class="ep-stat-label">Rounds</div>
+    </div>
+    <div class="ep-stat">
+      <div class="ep-stat-value">30d</div>
+      <div class="ep-stat-label">Duration</div>
+    </div>
+    <div class="ep-stat">
+      <div class="ep-stat-value green">¥5.0M</div>
+      <div class="ep-stat-label">Revenue</div>
+    </div>
+    <div class="ep-stat">
+      <div class="ep-stat-value">¥72</div>
+      <div class="ep-stat-label">API Cost</div>
+    </div>
+  </div>
+
+  
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R1 ← INBOUND</span>
+        <span class="exchange-stage">initial_response</span>
+      </div>
+      <div class='exchange-from'>高田 修平 &lt;takada@subsidy-pro-example.co.jp&gt;</div>
+      <div class="exchange-subject">IT導入補助金の活用で開発費用を最大2/3削減</div>
+      <div class="exchange-body inbound">真鍋様
+
+お世話になっております。
+補助金サポートプロ株式会社の高田です。
+
+2025年度のIT導入補助金の公募が始まりました。
+AI開発企業様の場合、以下のようなメリットがあります：
+
+- 補助率: 最大2/3（開発費用の2/3が補助金で戻る）
+- 補助上限: 450万円（通常枠）/ 3,000万円（デジタル化基盤導入枠）
+- 対象: AI開発、クラウドサービス導入、DX推進等
+
+弊社は補助金申請の専門家として、
+採択率95%以上の実績がございます。
+申請代行手数料は採択額の10〜15%です。
+
+貴社の開発費用の負担軽減にお役立ていただけると思います。
+まずは15分ほど、補助金の活用方法をご説明させてください。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">EmailParser.is_sales_email()</span></div>
+<div class="api-call"><span class="api-name">EmailParser.extract()</span> <span class="api-cost">$0.03</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R2 → OUTBOUND</span>
+        <span class="exchange-stage">initial_response</span>
+      </div>
+      
+      <div class="exchange-subject">Re: IT導入補助金の活用 — 別の角度からのご提案</div>
+      <div class="exchange-body outbound">高田様
+
+お世話になっております。株式会社mmmmmの真鍋です。
+
+補助金のご案内ありがとうございます。
+弊社はAI開発の「提供側」ですので、自社の開発費用に
+補助金を使うというよりも、別のアイデアがあります。
+
+弊社のクライアント企業（AI開発を発注する側）が、
+補助金を活用して弊社への発注費用を軽減できれば、
+受注のハードルが大幅に下がります。
+
+例えば：
+弊社のAI開発案件 ¥450万 → 補助金で企業負担 ¥150万
+
+この「補助金込みAI開発パッケージ」を
+高田様と共同で提案できないかと考えています。
+
+具体的には：
+1. 弊社がAI開発の見積もりを作成
+2. 高田様が補助金申請書類を作成・代行
+3. クライアント企業は実質1/3の負担でAI開発を導入
+4. 手数料は採択額の10%を高田様に（弊社負担 or クライアント負担）
+
+いかがでしょうか。一度お話しさせてください。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.07</span> <span class="api-desc">// 補助金を「自社コスト削減」ではなく「クライアントの受注促進ツール」として再定義する逆提案</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R3 ← INBOUND</span>
+        <span class="exchange-stage">meeting_setup</span>
+      </div>
+      
+      <div class="exchange-subject">Re: 補助金 × AI開発 — 素晴らしいアイデア</div>
+      <div class="exchange-body inbound">真鍋様
+
+これは素晴らしいアイデアですね！
+実は弊社でも、IT企業様と組んで「補助金込みパッケージ」を
+共同販売するスキームは以前から構想していました。
+
+AI開発は補助金の採択率が高い分野ですし、
+「AI導入に興味はあるが予算がない」という企業様は非常に多いです。
+
+弊社の強み：
+- 補助金採択率95%
+- 申請書作成のテンプレートとノウハウ
+- 補助金事務局との関係性
+
+ぜひ具体的な協業スキームを詰めましょう。
+来週お打ち合わせは可能でしょうか。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">ConversationStateMachine.advance()</span> <span class="api-desc">// initial_response → meeting_setup</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R4 → OUTBOUND</span>
+        <span class="exchange-stage">meeting_setup</span>
+      </div>
+      
+      <div class="exchange-subject">Re: 補助金 × AI開発 — 打合せ候補</div>
+      <div class="exchange-body outbound">高田様
+
+ご共感いただきありがとうございます。
+
+来週の候補です：
+- 5月26日（月）14:00〜15:00
+- 5月28日（水）10:00〜11:00
+
+打合せに向けて、以下を準備します：
+1. 弊社のAI開発メニュー（補助金対応版）
+2. 想定するクライアント企業のペルソナ
+3. 価格設計案（補助金込み）
+
+高田様からは以下をお教えいただけると助かります：
+- 2025年度の主要な補助金スケジュール
+- AI開発案件での採択実績
+- 申請から採択までのリードタイム</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">MeetingScheduler.generate_proposals()</span></div>
+<div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R5 ← INBOUND</span>
+        <span class="exchange-stage">proposal</span>
+      </div>
+      
+      <div class="exchange-subject">Re: 打合せ確定 + 補助金スケジュール</div>
+      <div class="exchange-body inbound">真鍋様
+
+5月28日（水）10:00〜で確定です。
+
+補助金スケジュール：
+- IT導入補助金: 公募中〜6月末締切（通常枠）
+- ものづくり補助金: 次回公募7月予定（上限1,250万円）
+- 事業再構築補助金: 次回8月（AI活用は採択率高い）
+
+AI開発での採択実績は直近1年で12件、採択率92%です。
+申請→採択: 約2〜3ヶ月
+
+打合せ楽しみにしています。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">MeetingScheduler.extract_dates()</span> <span class="api-cost">$0.03</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R6 → OUTBOUND</span>
+        <span class="exchange-stage">proposal</span>
+      </div>
+      
+      <div class="exchange-subject">Re: 打合せまとめ — パートナーシップ提案</div>
+      <div class="exchange-body outbound">高田様
+
+打合せありがとうございました。
+議論した内容を整理し、パートナーシップ案を提示します。
+
+【補助金×AI開発 共同販売パートナーシップ】
+
+■ スキーム
+1. 弊社がAI開発案件を受注（見積もり作成）
+2. 高田様が補助金申請を代行（書類作成・提出）
+3. クライアントは実質1/3〜1/2の負担でAI開発を導入
+
+■ 価格例
+弊社AI開発: ¥450万 → 補助金¥300万 → 企業負担¥150万
+高田様手数料: ¥300万 × 10% = ¥30万（弊社から支払い）
+弊社純売上: ¥450万 - ¥30万 = ¥420万
+
+■ 紹介の流れ
+- 弊社クライアントに補助金活用を提案 → 高田様に申請依頼
+- 高田様の顧客にAI開発ニーズがあれば → 弊社に紹介
+
+■ 手数料
+- 弊社→高田様: 補助金採択額の10%
+- 高田様→弊社: AI開発紹介の場合は契約額の10%
+
+年間10件の共同案件を目標にしましょう。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.07</span> <span class="api-desc">// パートナーシップ提案の生成。補助金スキームの数字を活用した具体的な価格設計</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R7 ← INBOUND</span>
+        <span class="exchange-stage">negotiation</span>
+      </div>
+      
+      <div class="exchange-subject">Re: パートナーシップ — 条件交渉</div>
+      <div class="exchange-body inbound">真鍋様
+
+スキーム、非常に分かりやすいです。
+
+1点交渉ですが、手数料率を以下に調整できませんか：
+- 弊社への手数料: 採択額の12%（10%→12%）
+  理由: 申請書作成の工数が大きいため
+
+また、弊社からAI開発紹介時の手数料は
+7%に下げていただけると、より多く紹介しやすいです。
+
+年間10件の目標は達成可能と考えています。
+弊社の顧客基盤だけでも5件は見込めます。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">NegotiationEngine.analyze_offer()</span> <span class="api-cost">$0.03</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R8 → OUTBOUND</span>
+        <span class="exchange-stage">negotiation</span>
+      </div>
+      
+      <div class="exchange-subject">Re: パートナーシップ — 条件合意</div>
+      <div class="exchange-body outbound">高田様
+
+承知しました。以下で合意いたしましょう：
+
+- 弊社→高田様: 採択額の12%
+- 高田様→弊社: AI開発紹介は契約額の8%（7%と10%の間を取りました）
+
+弊社としては、補助金を組み合わせることで
+受注率が上がるメリットが大きいので、
+12%は十分にペイできると判断しました。
+
+契約書を準備いたします。
+また、最初のテストケースとして、
+弊社の既存クライアント1社で
+補助金申請を試しましょう。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">NegotiationEngine.build_negotiation_context()</span></div>
+<div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R9 ← INBOUND</span>
+        <span class="exchange-stage">contract</span>
+      </div>
+      
+      <div class="exchange-subject">Re: 条件合意 — 了承</div>
+      <div class="exchange-body inbound">真鍋様
+
+8%で了承です。ありがとうございます。
+
+契約書、お待ちしております。
+弊社法務: legal@subsidy-pro-example.co.jp
+
+テストケースのクライアント情報をいただければ、
+すぐに補助金申請の準備に入れます。
+
+IT導入補助金の次回締切は6月30日ですので、
+早めに動けると良いですね。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">ConversationStateMachine.advance()</span> <span class="api-desc">// negotiation → contract</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R10 → OUTBOUND</span>
+        <span class="exchange-stage">contract</span>
+      </div>
+      
+      <div class="exchange-subject">Re: パートナー契約書送付</div>
+      <div class="exchange-body outbound">高田様
+
+パートナー契約書をクラウドサインで送付しました。
+legal@subsidy-pro-example.co.jp にもCCしております。
+
+主な条項：
+- 契約形態: 相互紹介パートナー
+- 手数料: 弊社→高田様12%（補助金採択額）/ 高田様→弊社8%（AI開発契約額）
+- 契約期間: 1年（自動更新）
+- 秘密保持: クライアント情報の相互保護
+
+テストケースのクライアント情報を別途お送りします。
+6月末の締切に間に合うよう進めましょう。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">ContractGenerator.generate()</span></div>
+<div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R11 ← INBOUND</span>
+        <span class="exchange-stage">implementation</span>
+      </div>
+      
+      <div class="exchange-subject">テストケース — 補助金採択！</div>
+      <div class="exchange-body inbound">真鍋様
+
+嬉しいご報告です！
+テストケースのクライアント様のIT導入補助金、
+採択されました！
+
+採択額: ¥300万円
+弊社手数料: ¥36万円
+
+クライアント様も大変喜ばれており、
+「補助金が使えるならぜひAI開発を進めたい」とのことです。
+
+このスキームは非常にうまくいきそうですね。
+弊社からも早速2社ご紹介したい企業があります。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">ConversationStateMachine.advance()</span> <span class="api-desc">// contract → implementation</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R12 → OUTBOUND</span>
+        <span class="exchange-stage">billing</span>
+      </div>
+      
+      <div class="exchange-subject">Re: 採択おめでとうございます！ — 請求書送付</div>
+      <div class="exchange-body outbound">高田様
+
+テストケースの採択、おめでとうございます！
+そして弊社クライアントへのご尽力に感謝いたします。
+
+補助金手数料の請求書をお送りします：
+- 金額: ¥36万円（税別）/ ¥396,000（税込）
+- お支払い: クライアント様からの補助金入金後30日以内
+
+2社のご紹介、ぜひお願いいたします！
+弊社側からも来月2件のクライアントを
+補助金申請にお繋ぎする予定です。
+
+このパートナーシップ、年間10件は
+軽く超えそうですね。
+
+引き続きよろしくお願いいたします。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">InvoiceGenerator.generate()</span></div>
+<div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span></div>
+<div class="api-call"><span class="api-name">DashboardSync.sync_all()</span></div>
+</div>
+    </div>
+    
+
+  
+
+  <div class="footer">SALES MIRROR BOT — 営業ボットには、営業ボットを。</div>
+</div>
+</body>
+</html>

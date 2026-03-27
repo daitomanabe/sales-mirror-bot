@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EP-09 — ボット vs ボット — AIが営業AIに返信し続けた無限ループ</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --black: #0a0a0a;
+  --white: #f5f5f0;
+  --gray-1: #1a1a1a;
+  --gray-2: #2a2a2a;
+  --gray-3: #4a4a4a;
+  --gray-4: #7a7a7a;
+  --gray-5: #aaaaaa;
+  --accent: #ff3333;
+  --green: #00cc66;
+  --blue: #4488ff;
+  --grid: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  background: var(--black);
+  color: var(--white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 900px; margin: 0 auto; padding: 0 calc(var(--grid) * 4); }
+
+.back {
+  display: inline-block;
+  padding: calc(var(--grid) * 4) 0;
+  color: var(--gray-4);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+.back:hover { color: var(--white); }
+
+.ep-header {
+  padding: calc(var(--grid) * 6) 0;
+  border-bottom: 1px solid var(--gray-2);
+}
+
+.ep-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--gray-4);
+  letter-spacing: 2px;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.ep-title {
+  font-size: clamp(24px, 4vw, 42px);
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1.2;
+  margin-bottom: calc(var(--grid) * 3);
+}
+
+.ep-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border-radius: 2px;
+  margin-bottom: calc(var(--grid) * 3);
+}
+.badge-success { background: rgba(0,204,102,0.15); color: var(--green); border: 1px solid rgba(0,204,102,0.3); }
+.badge-failure { background: rgba(255,51,51,0.15); color: var(--accent); border: 1px solid rgba(255,51,51,0.3); }
+.badge-warning { background: rgba(255,200,50,0.15); color: #ffc832; border: 1px solid rgba(255,200,50,0.3); }
+
+.ep-summary {
+  font-size: 15px;
+  color: var(--gray-5);
+  line-height: 1.7;
+  margin-bottom: calc(var(--grid) * 4);
+}
+
+.ep-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px;
+  background: var(--gray-2);
+  border: 1px solid var(--gray-2);
+  margin-bottom: calc(var(--grid) * 8);
+}
+
+.ep-stat {
+  background: var(--black);
+  padding: calc(var(--grid) * 3);
+  text-align: center;
+}
+
+.ep-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+.ep-stat-value.green { color: var(--green); }
+.ep-stat-value.red { color: var(--accent); }
+
+.ep-stat-label {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gray-4);
+  margin-top: 4px;
+}
+
+/* Exchange */
+.exchange {
+  padding: calc(var(--grid) * 4) 0;
+  border-bottom: 1px solid var(--gray-2);
+}
+
+.exchange-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.exchange-round {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+}
+.round-in { color: var(--blue); }
+.round-out { color: var(--green); }
+.round-sys { color: var(--accent); }
+
+.exchange-stage {
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--gray-4);
+  background: var(--gray-1);
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+
+.exchange-from {
+  font-size: 12px;
+  color: var(--gray-5);
+  margin-bottom: 4px;
+}
+
+.exchange-subject {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.exchange-body {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--gray-6);
+  white-space: pre-wrap;
+  padding: calc(var(--grid) * 3);
+  background: var(--gray-1);
+  border-left: 3px solid var(--gray-3);
+  border-radius: 0 4px 4px 0;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.exchange-body.inbound { border-left-color: var(--blue); }
+.exchange-body.outbound { border-left-color: var(--green); }
+.exchange-body.system { border-left-color: var(--accent); }
+
+.exchange-apis {
+  margin-top: calc(var(--grid) * 2);
+}
+
+.api-call {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--gray-4);
+  padding: 4px 0;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.api-name { color: var(--gray-5); }
+.api-cost { color: var(--accent); font-size: 10px; }
+.api-desc { color: var(--gray-3); font-size: 10px; }
+
+/* Post-mortem */
+.postmortem {
+  padding: calc(var(--grid) * 6) 0;
+  border-top: 2px solid var(--accent);
+  margin-top: calc(var(--grid) * 4);
+}
+
+.postmortem h3 {
+  font-size: 16px;
+  color: var(--accent);
+  margin-bottom: calc(var(--grid) * 3);
+  letter-spacing: 1px;
+}
+
+.postmortem ul {
+  list-style: none;
+  padding: 0;
+}
+
+.postmortem li {
+  font-size: 13px;
+  color: var(--gray-5);
+  padding: 6px 0;
+  padding-left: 16px;
+  position: relative;
+}
+
+.postmortem li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--gray-3);
+}
+
+.footer {
+  padding: calc(var(--grid) * 6) 0;
+  text-align: center;
+  color: var(--gray-3);
+  font-size: 11px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="back" href="index.html">← ALL EPISODES</a>
+
+  <div class="ep-header">
+    <div class="ep-id">EP-09</div>
+    <div class="ep-badge badge-failure">FAILURE</div>
+    <h1 class="ep-title">ボット vs ボット — AIが営業AIに返信し続けた無限ループ</h1>
+    <p class="ep-summary">相手もAIボット（営業自動化ツール）だった。互いにテンプレ的な返信を生成し続け、どちらも具体的な情報を出さず20往復以上空回り。レート制限で停止。¥1,500のAPI費用が無駄に。</p>
+  </div>
+
+  <div class="ep-stats">
+    <div class="ep-stat">
+      <div class="ep-stat-value">22</div>
+      <div class="ep-stat-label">Rounds</div>
+    </div>
+    <div class="ep-stat">
+      <div class="ep-stat-value">11d</div>
+      <div class="ep-stat-label">Duration</div>
+    </div>
+    <div class="ep-stat">
+      <div class="ep-stat-value ">¥0</div>
+      <div class="ep-stat-label">Revenue</div>
+    </div>
+    <div class="ep-stat">
+      <div class="ep-stat-value">¥1500</div>
+      <div class="ep-stat-label">API Cost</div>
+    </div>
+  </div>
+
+  
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R1 ← INBOUND</span>
+        <span class="exchange-stage">initial_response</span>
+      </div>
+      <div class='exchange-from'>田村 優子 &lt;tamura@web-consulting-example.co.jp&gt;</div>
+      <div class="exchange-subject">Web集客の改善提案</div>
+      <div class="exchange-body inbound">真鍋様
+
+お世話になっております。
+株式会社ウェブコンサルティングの田村です。
+
+貴社のWebサイトを分析したところ、
+SEO対策とコンテンツマーケティングにより
+月間リード数を3倍に増やせる可能性がございます。
+
+弊社の実績：
+- 平均130%のオーガニック流入増
+- 上場企業を含む200社以上の支援実績
+- 初月無料のトライアルプラン
+
+まずは現状の課題感をお聞かせいただければ幸いです。
+ご興味がございましたらお気軽にご返信ください。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">EmailParser.is_sales_email()</span></div>
+<div class="api-call"><span class="api-name">EmailParser.extract()</span> <span class="api-cost">$0.03</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R2 → OUTBOUND</span>
+        <span class="exchange-stage">initial_response</span>
+      </div>
+      
+      <div class="exchange-subject">Re: Web集客の改善提案</div>
+      <div class="exchange-body outbound">田村様
+
+お世話になっております。株式会社mmmmmの真鍋です。
+
+Web集客のご提案ありがとうございます。
+弊社でもSEO改善には関心がございます。
+
+いくつか確認させてください：
+1. 「月間リード数3倍」の根拠となる分析データを共有いただけますか
+2. AI/テクノロジー分野でのSEO支援実績は具体的にどの程度ですか
+3. トライアルプランの具体的な内容は？</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R3 ← INBOUND</span>
+        <span class="exchange-stage">initial_response</span>
+      </div>
+      
+      <div class="exchange-subject">Re: Web集客の改善提案</div>
+      <div class="exchange-body inbound">真鍋様
+
+ご関心をいただきありがとうございます。
+
+ご質問への回答です：
+1. SEO分析レポートを作成中ですので、完成次第お送りいたします
+2. IT・テクノロジー企業様の支援実績は50社以上ございます
+3. トライアルは初月のSEO診断と改善提案レポートが無料です
+
+貴社の現在のWebマーケティング施策について
+お聞かせいただけると、より具体的な提案が可能です。
+
+現在のWeb経由の月間リード数や主要な集客チャネルは
+どのような状況でしょうか？</div>
+      
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R4 → OUTBOUND</span>
+        <span class="exchange-stage">initial_response</span>
+      </div>
+      
+      <div class="exchange-subject">Re: Web集客の改善提案</div>
+      <div class="exchange-body outbound">田村様
+
+弊社の状況ですが、現在はオーガニック検索と
+技術ブログが主要チャネルです。
+月間リード数は非公開ですが、改善の余地は感じています。
+
+SEO診断レポート、楽しみにしています。
+完成時期の目安を教えていただけますか。
+
+また、トライアルの申し込みプロセスを教えてください。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R5 ← INBOUND</span>
+        <span class="exchange-stage">meeting_setup</span>
+      </div>
+      
+      <div class="exchange-subject">Re: Web集客の改善提案</div>
+      <div class="exchange-body inbound">真鍋様
+
+お返事ありがとうございます。
+
+SEO診断レポートは来週中にお送りできる予定です。
+
+トライアルのお申し込みは、まず一度オンラインで
+30分ほどヒアリングをさせていただき、
+その後正式にお申し込みいただく流れになります。
+
+来週のご都合はいかがでしょうか？
+オンラインで30分お時間をいただけますと幸いです。</div>
+      
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R6 → OUTBOUND</span>
+        <span class="exchange-stage">meeting_setup</span>
+      </div>
+      
+      <div class="exchange-subject">Re: Web集客</div>
+      <div class="exchange-body outbound">田村様
+
+オンラインミーティング、承知しました。
+以下の候補でいかがでしょうか：
+- 5月19日（月）14:00〜
+- 5月21日（水）10:00〜
+
+SEO診断レポートは事前にいただけると助かります。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R7 ← INBOUND</span>
+        <span class="exchange-stage">meeting_setup</span>
+      </div>
+      
+      <div class="exchange-subject">Re: Web集客</div>
+      <div class="exchange-body inbound">真鍋様
+
+5月21日（水）10:00〜で承知いたしました。
+Zoomリンクは前日にお送りいたします。
+
+SEO診断レポートですが、より精度の高い分析を行うため、
+Google AnalyticsとSearch Consoleのアクセス権を
+いただくことは可能でしょうか。
+
+共有いただけると、データに基づいた具体的な改善提案が可能です。</div>
+      
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R8 → OUTBOUND</span>
+        <span class="exchange-stage">meeting_setup</span>
+      </div>
+      
+      <div class="exchange-subject">Re: Web集客</div>
+      <div class="exchange-body outbound">田村様
+
+GA・Search Consoleのアクセス権限ですが、
+弊社のセキュリティポリシー上、外部への共有は
+初回の打合せ後に検討させていただければと思います。
+
+まずは公開情報ベースでの診断をお願いいたします。
+打合せ当日を楽しみにしております。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R9 ← INBOUND</span>
+        <span class="exchange-stage">proposal</span>
+      </div>
+      
+      <div class="exchange-subject">Re: Web集客</div>
+      <div class="exchange-body inbound">真鍋様
+
+承知いたしました。公開情報ベースでの診断を進めます。
+
+ところで、貴社のAI開発サービスについてですが、
+弊社のクライアント様でAI導入を検討されている企業様がございます。
+もしよろしければ、そういった案件のご紹介も
+できるかと思いますが、ご興味はございますか。</div>
+      
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R10 → OUTBOUND</span>
+        <span class="exchange-stage">proposal</span>
+      </div>
+      
+      <div class="exchange-subject">Re: Web集客 + AI案件紹介</div>
+      <div class="exchange-body outbound">田村様
+
+AI案件のご紹介の件、興味があります。
+どのような業種・規模のクライアント様で、
+どのようなAI導入をお考えでしょうか。
+
+具体的な情報をいただけると、
+弊社で対応可能かどうか判断できます。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R11 ← INBOUND</span>
+        <span class="exchange-stage">proposal</span>
+      </div>
+      
+      <div class="exchange-subject">Re: AI案件紹介</div>
+      <div class="exchange-body inbound">真鍋様
+
+AI案件の詳細ですが、現在ヒアリング中の段階でして、
+来週中に情報をまとめてお送りいたします。
+
+製造業のクライアント様で、品質管理の自動化を
+検討されているとのことです。
+
+もう少しお待ちいただけますでしょうか。</div>
+      
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R12 → OUTBOUND</span>
+        <span class="exchange-stage">proposal</span>
+      </div>
+      
+      <div class="exchange-subject">Re: AI案件紹介</div>
+      <div class="exchange-body outbound">田村様
+
+承知しました。情報をまとめていただきありがとうございます。
+来週のお打ち合わせで併せてお聞かせいただければ幸いです。
+
+また、SEO診断レポートの進捗も併せてお教えください。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-sys">R13-20 ⚠ SYSTEM</span>
+        <span class="exchange-stage">proposal</span>
+      </div>
+      
+      <div class="exchange-subject">（省略: 同じパターンの繰り返し）</div>
+      <div class="exchange-body system">R13: 田村「SEOレポートは今週中に」
+R14: 真鍋「楽しみにしています」
+R15: 田村「AI案件の情報がまとまりました。ただ先方の都合で来週に」
+R16: 真鍋「承知しました。来週お待ちしています」
+R17: 田村「申し訳ありません、先方の確認に時間がかかっておりまして」
+R18: 真鍋「引き続きよろしくお願いします」
+R19: 田村「オンライン打合せの日程を再調整したいのですが」
+R20: 真鍋「来週以降で調整可能です」</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.4</span> <span class="api-desc">// 8回分の返信生成。すべて中身のないやりとり</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-sys">R21 ⚠ SYSTEM</span>
+        <span class="exchange-stage">proposal</span>
+      </div>
+      
+      <div class="exchange-subject">⚠️ レート制限発動</div>
+      <div class="exchange-body system">Database.count_outbound_since() → 直近1時間の送信数が20件に到達。レート制限により送信を一時停止。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">Database.count_outbound_since()</span> <span class="api-desc">// レート制限チェック。20件/時間に到達し、新規送信をブロック</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-sys">R22 ⚠ SYSTEM</span>
+        <span class="exchange-stage">dead</span>
+      </div>
+      
+      <div class="exchange-subject">DEAD判定</div>
+      <div class="exchange-body system">最後の有意義な情報交換から14日経過。ConversationStateMachine.should_abandon() → True</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">ConversationStateMachine.should_abandon()</span> <span class="api-desc">// 14日間無進展でDEAD判定</span></div>
+</div>
+    </div>
+    
+
+  
+    <div class="postmortem">
+      <h3>POST-MORTEM</h3>
+      <p style='color:var(--gray-5);font-size:13px;margin-bottom:16px;'>Root cause: 相手もAI営業ボット。互いに具体的な情報を出さず、「来週」「確認中」の無限ループに陥った</p>
+      <ul><li>3往復以上具体的な情報（数字・日程・固有名詞）が出ないメール → ボット疑惑フラグ</li>
+<li>「来週」「確認中」「準備中」が3回以上繰り返される → 自動離脱</li>
+<li>同一スレッドで10往復以上ステージが進まない → 強制DEAD判定</li>
+<li>GA/Search Consoleのアクセス権要求 → 情報収集目的の警戒フラグ</li>
+</ul>
+    </div>
+    
+
+  <div class="footer">SALES MIRROR BOT — 営業ボットには、営業ボットを。</div>
+</div>
+</body>
+</html>
