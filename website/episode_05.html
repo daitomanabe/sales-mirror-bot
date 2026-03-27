@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EP-05 — 比較ビズ 相見積もりからRAG案件受注</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --black: #0a0a0a;
+  --white: #f5f5f0;
+  --gray-1: #1a1a1a;
+  --gray-2: #2a2a2a;
+  --gray-3: #4a4a4a;
+  --gray-4: #7a7a7a;
+  --gray-5: #aaaaaa;
+  --accent: #ff3333;
+  --green: #00cc66;
+  --blue: #4488ff;
+  --grid: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  background: var(--black);
+  color: var(--white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 900px; margin: 0 auto; padding: 0 calc(var(--grid) * 4); }
+
+.back {
+  display: inline-block;
+  padding: calc(var(--grid) * 4) 0;
+  color: var(--gray-4);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+.back:hover { color: var(--white); }
+
+.ep-header {
+  padding: calc(var(--grid) * 6) 0;
+  border-bottom: 1px solid var(--gray-2);
+}
+
+.ep-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--gray-4);
+  letter-spacing: 2px;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.ep-title {
+  font-size: clamp(24px, 4vw, 42px);
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1.2;
+  margin-bottom: calc(var(--grid) * 3);
+}
+
+.ep-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border-radius: 2px;
+  margin-bottom: calc(var(--grid) * 3);
+}
+.badge-success { background: rgba(0,204,102,0.15); color: var(--green); border: 1px solid rgba(0,204,102,0.3); }
+.badge-failure { background: rgba(255,51,51,0.15); color: var(--accent); border: 1px solid rgba(255,51,51,0.3); }
+.badge-warning { background: rgba(255,200,50,0.15); color: #ffc832; border: 1px solid rgba(255,200,50,0.3); }
+
+.ep-summary {
+  font-size: 15px;
+  color: var(--gray-5);
+  line-height: 1.7;
+  margin-bottom: calc(var(--grid) * 4);
+}
+
+.ep-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px;
+  background: var(--gray-2);
+  border: 1px solid var(--gray-2);
+  margin-bottom: calc(var(--grid) * 8);
+}
+
+.ep-stat {
+  background: var(--black);
+  padding: calc(var(--grid) * 3);
+  text-align: center;
+}
+
+.ep-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+.ep-stat-value.green { color: var(--green); }
+.ep-stat-value.red { color: var(--accent); }
+
+.ep-stat-label {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gray-4);
+  margin-top: 4px;
+}
+
+/* Exchange */
+.exchange {
+  padding: calc(var(--grid) * 4) 0;
+  border-bottom: 1px solid var(--gray-2);
+}
+
+.exchange-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.exchange-round {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+}
+.round-in { color: var(--blue); }
+.round-out { color: var(--green); }
+.round-sys { color: var(--accent); }
+
+.exchange-stage {
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--gray-4);
+  background: var(--gray-1);
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+
+.exchange-from {
+  font-size: 12px;
+  color: var(--gray-5);
+  margin-bottom: 4px;
+}
+
+.exchange-subject {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.exchange-body {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--gray-6);
+  white-space: pre-wrap;
+  padding: calc(var(--grid) * 3);
+  background: var(--gray-1);
+  border-left: 3px solid var(--gray-3);
+  border-radius: 0 4px 4px 0;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.exchange-body.inbound { border-left-color: var(--blue); }
+.exchange-body.outbound { border-left-color: var(--green); }
+.exchange-body.system { border-left-color: var(--accent); }
+
+.exchange-apis {
+  margin-top: calc(var(--grid) * 2);
+}
+
+.api-call {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--gray-4);
+  padding: 4px 0;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.api-name { color: var(--gray-5); }
+.api-cost { color: var(--accent); font-size: 10px; }
+.api-desc { color: var(--gray-3); font-size: 10px; }
+
+/* Post-mortem */
+.postmortem {
+  padding: calc(var(--grid) * 6) 0;
+  border-top: 2px solid var(--accent);
+  margin-top: calc(var(--grid) * 4);
+}
+
+.postmortem h3 {
+  font-size: 16px;
+  color: var(--accent);
+  margin-bottom: calc(var(--grid) * 3);
+  letter-spacing: 1px;
+}
+
+.postmortem ul {
+  list-style: none;
+  padding: 0;
+}
+
+.postmortem li {
+  font-size: 13px;
+  color: var(--gray-5);
+  padding: 6px 0;
+  padding-left: 16px;
+  position: relative;
+}
+
+.postmortem li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--gray-3);
+}
+
+.footer {
+  padding: calc(var(--grid) * 6) 0;
+  text-align: center;
+  color: var(--gray-3);
+  font-size: 11px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="back" href="index.html">← ALL EPISODES</a>
+
+  <div class="ep-header">
+    <div class="ep-id">EP-05</div>
+    <div class="ep-badge badge-success">SUCCESS</div>
+    <h1 class="ep-title">比較ビズ 相見積もりからRAG案件受注</h1>
+    <p class="ep-summary">見積もり比較サイトの3社相見積もり案件。GPT-4oで競合価格を分析し最適価格で入札、¥1,150万で受注。</p>
+  </div>
+
+  <div class="ep-stats">
+    <div class="ep-stat">
+      <div class="ep-stat-value">10</div>
+      <div class="ep-stat-label">Rounds</div>
+    </div>
+    <div class="ep-stat">
+      <div class="ep-stat-value">18d</div>
+      <div class="ep-stat-label">Duration</div>
+    </div>
+    <div class="ep-stat">
+      <div class="ep-stat-value green">¥11.5M</div>
+      <div class="ep-stat-label">Revenue</div>
+    </div>
+    <div class="ep-stat">
+      <div class="ep-stat-value">¥76</div>
+      <div class="ep-stat-label">API Cost</div>
+    </div>
+  </div>
+
+  
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R1 ← INBOUND</span>
+        <span class="exchange-stage">initial_response</span>
+      </div>
+      <div class='exchange-from'>比較ビズ事務局 &lt;matching@hikaku-biz-example.jp&gt;</div>
+      <div class="exchange-subject">【比較ビズ】AI開発案件のご紹介（3社相見積もり）</div>
+      <div class="exchange-body inbound">真鍋様
+
+比較ビズをご利用いただきありがとうございます。
+下記の案件にマッチングいたしましたのでご案内いたします。
+
+【案件概要】
+案件名: 社内ナレッジ検索システムのAI化
+業種: 大手製薬会社（従業員3,000名）
+予算: 1,000万〜1,500万円
+期間: 6ヶ月
+要件:
+- 社内文書（10万件）のベクトル化
+- RAGベースの質問応答システム構築
+- 既存SharePointとの連携
+- セキュリティ要件（オンプレ or プライベートクラウド）
+
+相見積もり: 3社（貴社含む）
+回答期限: 5月20日（火）
+
+ご対応いただける場合は、本メールに返信ください。
+クライアント様の連絡先をお送りいたします。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">EmailParser.is_sales_email()</span> <span class="api-desc">// キーワードヒューリスティクスで営業メール判定</span></div>
+<div class="api-call"><span class="api-name">EmailParser.extract()</span> <span class="api-cost">$0.03</span> <span class="api-desc">// メールから構造化情報を抽出</span></div>
+<div class="api-call"><span class="api-name">Database.upsert_conversation()</span> <span class="api-desc">// 新規会話をSQLiteに保存</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R2 → OUTBOUND</span>
+        <span class="exchange-stage">initial_response</span>
+      </div>
+      <div class='exchange-from'>真鍋 大度 &lt;bot@mmmmm-example.co.jp&gt;</div>
+      <div class="exchange-subject">Re: 【比較ビズ】AI開発案件のご紹介</div>
+      <div class="exchange-body outbound">比較ビズ事務局 御中
+
+株式会社mmmmmの真鍋です。
+本案件、ぜひ対応させていただきたいです。
+
+RAGシステムの構築は弊社の最も得意とする領域で、
+直近6ヶ月で3件の類似案件を納品しております。
+特にオンプレ/プライベートクラウド要件への対応実績も豊富です。
+
+クライアント様の連絡先をお送りください。
+回答期限までに見積書と提案書を提出いたします。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span> <span class="api-desc">// 初回返信を生成。system.txtのペルソナ + initial_response指示</span></div>
+<div class="api-call"><span class="api-name">SmtpSender.send()</span> <span class="api-desc">// SMTP送信。In-Reply-To/Referencesヘッダでスレッド維持</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R3 ← INBOUND</span>
+        <span class="exchange-stage">meeting_setup</span>
+      </div>
+      <div class='exchange-from'>藤田 健一 &lt;fujita@pharma-example.co.jp&gt;</div>
+      <div class="exchange-subject">ナレッジ検索AI化の件</div>
+      <div class="exchange-body inbound">真鍋様
+
+比較ビズ経由でご連絡いただきました。
+大手製薬のIT部門の藤田です。
+
+要件の詳細をお送りします：
+- 対象文書: 研究論文、SOP、規制文書（日英混在）
+- ユーザー数: 500名
+- レスポンス: 3秒以内
+- セキュリティ: Azure Private Link必須
+- 既存環境: Azure AD + SharePoint Online
+
+ご質問等あればお知らせください。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">ConversationStateMachine.advance()</span> <span class="api-desc">// inbound 1件でmeeting_setupに遷移</span></div>
+<div class="api-call"><span class="api-name">NegotiationEngine.init_state()</span> <span class="api-desc">// 交渉状態を初期化。budget_low=10M, budget_high=15M</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R4 → OUTBOUND</span>
+        <span class="exchange-stage">meeting_setup</span>
+      </div>
+      <div class='exchange-from'>真鍋 大度 &lt;bot@mmmmm-example.co.jp&gt;</div>
+      <div class="exchange-subject">Re: ナレッジ検索AI化の件 — 確認事項</div>
+      <div class="exchange-body outbound">藤田様
+
+お世話になっております。真鍋です。
+要件の詳細ありがとうございます。
+
+いくつか追加で確認させてください：
+
+1. 対象文書のフォーマット（PDF/Word/HTML等の比率）
+2. 既存の検索システムの有無と課題
+3. 想定するパイロット部門（全社一斉 or 段階展開）
+4. Azure OpenAI Serviceの利用は許可されていますか
+
+また、提案前にオンラインで30分ほど要件を深掘りさせていただけると、
+より精度の高い提案ができるかと思います。
+
+来週の候補です：
+- 5月12日（月）14:00〜
+- 5月14日（水）10:00〜</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span> <span class="api-desc">// 要件深掘りの質問を生成。製薬業界特有の観点を含める</span></div>
+<div class="api-call"><span class="api-name">MeetingScheduler.generate_proposals()</span> <span class="api-desc">// 来週の営業日から候補日を自動生成</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R5 ← INBOUND</span>
+        <span class="exchange-stage">proposal</span>
+      </div>
+      <div class='exchange-from'>藤田 健一 &lt;fujita@pharma-example.co.jp&gt;</div>
+      <div class="exchange-subject">Re: ナレッジ検索AI化の件 — 回答</div>
+      <div class="exchange-body inbound">真鍋様
+
+回答します：
+1. PDF 60%、Word 30%、HTML 10%
+2. SharePoint標準検索を使用中。精度に不満あり
+3. 研究開発部門（200名）からパイロット
+4. Azure OpenAI Serviceは社内承認済み
+
+5月14日（水）10:00〜でお願いします。
+Teamsリンクをお送りします。
+
+なお、他2社も同時並行で話を進めています。
+回答期限の5月20日までに提案書をいただけると助かります。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">MeetingScheduler.extract_dates()</span> <span class="api-cost">$0.03</span> <span class="api-desc">// 確定日時を構造化抽出</span></div>
+<div class="api-call"><span class="api-name">GPT-4o（競合分析）</span> <span class="api-cost">$0.07</span> <span class="api-desc">// 3社相見積もりでの価格戦略分析。大手SIer=¥1,400万、スタートアップ=¥900万と予測。最適価格=¥1,200万</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R6 → OUTBOUND</span>
+        <span class="exchange-stage">proposal</span>
+      </div>
+      <div class='exchange-from'>真鍋 大度 &lt;bot@mmmmm-example.co.jp&gt;</div>
+      <div class="exchange-subject">【ご提案】ナレッジ検索AI化プロジェクト</div>
+      <div class="exchange-body outbound">藤田様
+
+お世話になっております。真鍋です。
+先日のお打ち合わせありがとうございました。
+
+提案書と見積書を添付いたします。
+
+【提案のポイント】
+1. 製薬業界の規制文書（GxP/SOP）に最適化したRAGパイプライン
+2. 日英混在文書のマルチリンガルembedding（multilingual-e5-large）
+3. Azure Private Link + Azure OpenAI Serviceで完全閉域網
+4. 段階導入: PoC（研究開発部門200名）→ 全社展開
+
+【見積もり】¥12,000,000（税別）
+- フェーズ1 PoC: ¥3,000,000（2ヶ月）
+- フェーズ2 本開発: ¥7,000,000（3ヶ月）
+- フェーズ3 導入・チューニング: ¥2,000,000（1ヶ月）
+
+回答期限までにご質問等あれば、いつでもご連絡ください。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">GPT-4o（提案書ドラフト生成）</span> <span class="api-cost">$0.1</span> <span class="api-desc">// 案件要件+競合分析結果から提案書の本文を生成。製薬業界特有の用語（GxP等）を含む</span></div>
+<div class="api-call"><span class="api-name">Jinja2（見積書テンプレート）</span> <span class="api-desc">// フェーズ分割の見積書をレンダリング</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R7 ← INBOUND</span>
+        <span class="exchange-stage">negotiation</span>
+      </div>
+      <div class='exchange-from'>藤田 健一 &lt;fujita@pharma-example.co.jp&gt;</div>
+      <div class="exchange-subject">Re: 【ご提案】ナレッジ検索AI化プロジェクト</div>
+      <div class="exchange-body inbound">真鍋様
+
+提案書拝見しました。技術面では非常に好印象です。
+特にGxP文書への理解が深い点が高く評価されています。
+
+1点、価格について相談です。
+社内稟議の都合上¥1,100万以内に収まると通りやすいのですが、
+調整は可能でしょうか。
+
+また、PoCで期待する精度目標があれば教えてください。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">NegotiationEngine.analyze_offer()</span> <span class="api-cost">$0.03</span> <span class="api-desc">// 価格交渉シグナルの検出。値引き要求¥1,100万</span></div>
+<div class="api-call"><span class="api-name">NegotiationEngine.calc_counter_offer()</span> <span class="api-desc">// カウンターオファー計算。round=1、stratey=reverse</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R8 → OUTBOUND</span>
+        <span class="exchange-stage">negotiation</span>
+      </div>
+      <div class='exchange-from'>真鍋 大度 &lt;bot@mmmmm-example.co.jp&gt;</div>
+      <div class="exchange-subject">Re: 【ご提案】ナレッジ検索AI化プロジェクト — 価格調整</div>
+      <div class="exchange-body outbound">藤田様
+
+お世話になっております。真鍋です。
+
+ご予算のご事情、承知いたしました。
+以下のように調整いたします：
+
+【改訂見積もり】¥11,500,000（税別）
+- フェーズ1 PoC: ¥3,000,000
+- フェーズ2 本開発: ¥6,500,000
+- フェーズ3 導入: ¥2,000,000
+
+¥50万の削減はフェーズ2の一部機能をPoC後の判断に委ねることで実現します。
+PoC精度目標: 検索精度（MRR@10）0.85以上を目指します。
+
+この条件でよろしければ、契約書の準備に進ませていただきます。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">NegotiationEngine.build_negotiation_context()</span> <span class="api-desc">// 交渉コンテキスト生成。オファー履歴+推奨金額を含む</span></div>
+<div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.07</span> <span class="api-desc">// 交渉戦略プロンプト（negotiation_strategy.txt）を含む返信生成</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R9 ← INBOUND</span>
+        <span class="exchange-stage">contract</span>
+      </div>
+      <div class='exchange-from'>藤田 健一 &lt;fujita@pharma-example.co.jp&gt;</div>
+      <div class="exchange-subject">Re: 【ご提案】— 選定のご連絡</div>
+      <div class="exchange-body inbound">真鍋様
+
+社内選定の結果、貴社に決定いたしました。
+¥11,500,000の条件で問題ございません。
+
+契約書の準備をお願いいたします。
+弊社法務のCC: legal@pharma-example.co.jp
+
+6月1日からの着手を希望しています。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">NegotiationEngine.analyze_offer()</span> <span class="api-cost">$0.03</span> <span class="api-desc">// 合意シグナル検出: acceptance_signal=true</span></div>
+<div class="api-call"><span class="api-name">ConversationStateMachine.advance()</span> <span class="api-desc">// negotiation → contract</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R10 → OUTBOUND</span>
+        <span class="exchange-stage">billing</span>
+      </div>
+      <div class='exchange-from'>真鍋 大度 &lt;bot@mmmmm-example.co.jp&gt;</div>
+      <div class="exchange-subject">【契約書・請求書送付】ナレッジ検索AI化プロジェクト</div>
+      <div class="exchange-body outbound">藤田様
+
+お世話になっております。真鍋です。
+選定いただきありがとうございます！
+
+契約書をクラウドサインで送付いたしました。
+legal@pharma-example.co.jp にもCCしております。
+
+着手金（フェーズ1 PoC分）の請求書を添付いたします。
+- 金額: ¥3,300,000（税込）
+- お支払い条件: 請求書受領後30日以内
+
+6月1日のキックオフに向けて準備を進めます。
+来週中にプロジェクト計画書をお送りしますので、
+SharePoint環境へのアクセス権付与をお願いいたします。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">ContractGenerator.generate()</span> <span class="api-desc">// 業務委託契約書をレンダリング。金額¥11,500,000、期間6ヶ月</span></div>
+<div class="api-call"><span class="api-name">InvoiceGenerator.generate()</span> <span class="api-desc">// 着手金請求書をレンダリング。金額¥3,000,000+税</span></div>
+<div class="api-call"><span class="api-name">Database.save_document()</span> <span class="api-desc">// 契約書・請求書をDB保存</span></div>
+<div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span> <span class="api-desc">// 契約送付メールの生成</span></div>
+<div class="api-call"><span class="api-name">DashboardSync.sync_all()</span> <span class="api-desc">// Cloudflare D1にデータ同期</span></div>
+</div>
+    </div>
+    
+
+  
+
+  <div class="footer">SALES MIRROR BOT — 営業ボットには、営業ボットを。</div>
+</div>
+</body>
+</html>

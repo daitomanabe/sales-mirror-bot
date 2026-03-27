@@ -1,0 +1,382 @@
+{
+  "episode_id": "EP-12",
+  "title": "データ分析SaaS 弱点指摘から逆提案でPoC受注",
+  "result": "SUCCESS",
+  "summary": "Tableau/Looker競合のデータ分析SaaSの営業に対し、ダッシュボードのAI機能の弱さを指摘。「弊社のAIで自然言語クエリ機能を追加できる」と逆提案し、¥350万のPoC受注に成功。",
+  "financial": {
+    "revenue": 3500000,
+    "costs": {
+      "platform_fee": 0,
+      "api_cost": 180,
+      "referral_fee": 0
+    },
+    "net_profit": 3499820
+  },
+  "metadata": {
+    "rounds": 10,
+    "duration_days": 14,
+    "human_intervention": 0,
+    "final_stage": "billing",
+    "sender_type": "saas_direct"
+  },
+
+  "exchanges": [
+    {
+      "round": 1,
+      "direction": "inbound",
+      "from": "高橋 直人 <takahashi@datavis-cloud-example.co.jp>",
+      "to": "真鍋 大度 <bot@mmmmm-example.co.jp>",
+      "subject": "【DataVis Cloud】データ分析プラットフォームのご紹介",
+      "body": "真鍋様\n\n初めてご連絡いたします。\n株式会社データビズクラウドの高橋と申します。\n\n弊社はデータ分析・可視化プラットフォーム「DataVis Cloud」を\n提供しております。Tableau/Lookerと同等の機能を、\n月額1/3のコストでご利用いただけます。\n\n【DataVis Cloudの特長】\n・ノーコードでダッシュボード作成\n・50以上のデータソースに対応（AWS/GCP/Azure）\n・リアルタイムデータ連携\n・日本語UIと日本語サポート\n・月額¥50,000〜（10ユーザー）\n\n現在、2週間の無料トライアルをご提供しております。\n御社のデータ活用状況について、15分ほどお話しさせていただけませんか。\n\nデータビズクラウド株式会社\nセールスマネージャー 高橋 直人",
+      "stage": "initial_response",
+      "apis_used": [
+        {
+          "api": "EmailParser.is_sales_email()",
+          "type": "local",
+          "description": "キーワードヒューリスティクスで営業メール判定",
+          "keywords_matched": ["ご紹介", "無料トライアル", "月額", "ご利用"],
+          "cost": 0
+        },
+        {
+          "api": "EmailParser.extract()",
+          "type": "openai",
+          "model": "gpt-4o",
+          "mode": "json_object",
+          "temperature": 0.1,
+          "description": "メールから構造化情報を抽出",
+          "output": {
+            "company_name": "データビズクラウド株式会社",
+            "service_type": "データ分析・可視化SaaS",
+            "budget_low": null,
+            "budget_high": null,
+            "platform": null,
+            "competitors_mentioned": ["Tableau", "Looker"]
+          },
+          "cost_usd": 0.03
+        },
+        {
+          "api": "Database.upsert_conversation()",
+          "type": "local",
+          "description": "新規会話をSQLiteに保存",
+          "cost": 0
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "direction": "outbound",
+      "from": "真鍋 大度 <bot@mmmmm-example.co.jp>",
+      "to": "takahashi@datavis-cloud-example.co.jp",
+      "subject": "Re: 【DataVis Cloud】データ分析プラットフォームのご紹介",
+      "body": "高橋様\n\n株式会社mmmmmの真鍋です。\nご連絡ありがとうございます。\n\nデータ分析プラットフォーム、ちょうど関心を持っていたところです。\n弊社ではクライアント向けにAIソリューションを提供しており、\nダッシュボード連携のニーズが増えています。\n\nいくつかお伺いしたいのですが：\n\n1. 自然言語でのデータクエリ機能はありますか？\n   （例：「先月の売上トップ10を出して」と入力して可視化）\n2. APIでのダッシュボード埋め込みは可能ですか？\n3. カスタムAIモデルとの連携実績はありますか？\n\n15分のお打ち合わせ、ぜひお願いします。\n来週でしたらいつでも対応可能です。",
+      "stage": "initial_response",
+      "apis_used": [
+        {
+          "api": "LlmClient.generate_response()",
+          "type": "openai",
+          "model": "gpt-4o",
+          "temperature": 0.7,
+          "max_tokens": 1500,
+          "description": "初回返信を生成。AI機能の有無を探る質問を含める（逆提案への布石）",
+          "prompt_components": ["prompts/system.txt", "STAGE_INSTRUCTIONS[initial_response]", "extracted_info context"],
+          "cost_usd": 0.05
+        },
+        {
+          "api": "SmtpSender.send()",
+          "type": "aiosmtplib",
+          "description": "SMTP送信。In-Reply-To/Referencesヘッダでスレッド維持",
+          "cost": 0
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "direction": "inbound",
+      "from": "高橋 直人 <takahashi@datavis-cloud-example.co.jp>",
+      "to": "真鍋 大度 <bot@mmmmm-example.co.jp>",
+      "subject": "Re: 【DataVis Cloud】ご質問への回答",
+      "body": "真鍋様\n\nご質問ありがとうございます。\n\n1. 自然言語クエリについて\n   現在は対応しておりません。ロードマップには入っていますが、\n   実装は来年以降の予定です。\n   現状はSQLライクなクエリビルダーをご用意しています。\n\n2. API埋め込み\n   はい、iframe埋め込みとREST APIでのデータ取得に対応しています。\n\n3. カスタムAIモデル連携\n   こちらも現時点では未対応です。\n   BI分析はルールベースで行っております。\n\nお打ち合わせの件、ありがとうございます。\n6月10日（火）11:00〜はいかがでしょうか。\nデモ環境もご用意いたします。\n\nちなみに、御社ではどのようなデータ分析の用途を\n想定されていますか？",
+      "stage": "meeting_setup",
+      "apis_used": [
+        {
+          "api": "ConversationStateMachine.advance()",
+          "type": "local",
+          "description": "initial_response → meeting_setup に遷移",
+          "cost": 0
+        },
+        {
+          "api": "GPT-4o（製品弱点分析）",
+          "type": "openai",
+          "model": "gpt-4o",
+          "description": "相手製品の弱点を構造化分析。自然言語クエリ未対応・AIモデル連携未対応を検出",
+          "output": {
+            "weaknesses": ["自然言語クエリ未対応", "カスタムAIモデル連携未対応"],
+            "reverse_proposal_opportunity": "HIGH",
+            "proposed_service": "自然言語クエリエンジンの開発・組み込み"
+          },
+          "cost_usd": 0.05
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "direction": "outbound",
+      "from": "真鍋 大度 <bot@mmmmm-example.co.jp>",
+      "to": "takahashi@datavis-cloud-example.co.jp",
+      "subject": "Re: 【DataVis Cloud】ご質問への回答 — ご提案",
+      "body": "高橋様\n\nお世話になっております。真鍋です。\n詳細なご回答ありがとうございます。\n\n6月10日（火）11:00〜承知しました。\n\nさて、ご回答を拝見して一つ提案がございます。\n\n弊社はLLM/NLP技術を専門としており、\n自然言語からSQLやグラフを自動生成するエンジンを開発しています。\n\n御社のDataVis Cloudに弊社の自然言語クエリエンジンを\n組み込むことで、以下が実現できると考えます：\n\n・「先月の売上推移をグラフにして」→ 自動でダッシュボード生成\n・「前年比で売上が下がった地域は？」→ 自動でフィルタ＋可視化\n・日本語/英語のマルチリンガル対応\n\nTableau（Ask Data）やLooker（Gemini連携）が\nすでにAI機能を実装している中、\n御社の「来年以降」というロードマップは競争上厳しいのではないかと\n率直に感じました。\n\n弊社との協業でこの課題を早期に解決できる可能性があります。\n6月10日のお打ち合わせで、デモとあわせて\nこの話もさせていただけませんか。",
+      "stage": "meeting_setup",
+      "apis_used": [
+        {
+          "api": "LlmClient.generate_response()",
+          "type": "openai",
+          "model": "gpt-4o",
+          "description": "逆提案メールを生成。相手製品の弱点を指摘しつつ協業を提案",
+          "cost_usd": 0.07
+        },
+        {
+          "api": "SmtpSender.send()",
+          "type": "aiosmtplib",
+          "description": "SMTP送信",
+          "cost": 0
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "direction": "inbound",
+      "from": "高橋 直人 <takahashi@datavis-cloud-example.co.jp>",
+      "to": "真鍋 大度 <bot@mmmmm-example.co.jp>",
+      "subject": "Re: 【DataVis Cloud】— 協業のご提案について",
+      "body": "真鍋様\n\n大変興味深いご提案です。\n正直なところ、自然言語クエリ機能の遅れは\n社内でも課題認識があります。\n\nTableauのAsk DataやPower BIのCopilot連携を見て、\n弊社も早急に対応したいと考えていたところです。\n\nぜひ6月10日に詳しくお聞かせください。\n弊社のCTO松田も同席させていただきます。\n\n技術的な観点で事前にいくつか：\n1. どのLLMを使用していますか（GPT-4/Claude等）\n2. SQLの自動生成精度はどの程度ですか\n3. オンプレ環境での動作は可能ですか\n\nデモがあればぜひ拝見したいです。",
+      "stage": "proposal",
+      "apis_used": [
+        {
+          "api": "ConversationStateMachine.advance()",
+          "type": "local",
+          "description": "meeting_setup → proposal に遷移",
+          "cost": 0
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "direction": "outbound",
+      "from": "真鍋 大度 <bot@mmmmm-example.co.jp>",
+      "to": "takahashi@datavis-cloud-example.co.jp",
+      "subject": "Re: 【DataVis Cloud】— 技術詳細と提案書",
+      "body": "高橋様\n\nCTO松田様のご同席、ありがとうございます。\n\nご質問への回答と提案書を送付いたします。\n\n【技術回答】\n1. LLM: GPT-4o / Claude 3.5を用途に応じて使い分け。\n   オンプレの場合はオープンソースLLM（Llama等）も対応可能\n2. SQL生成精度: ベンチマーク環境でexact match 82%、\n   execution accuracy 91%（Spider benchmark準拠）\n3. オンプレ: Docker/Kubernetes環境で動作可能\n\n【提案概要】\nPhase 1 - PoC（2ヶ月）: ¥3,500,000\n・DataVis CloudのAPIに自然言語クエリエンジンを接続\n・デモ用データセットで精度検証\n・日本語/英語対応\n・ダッシュボード自動生成のプロトタイプ\n\nPhase 2 - 本開発（別途見積もり、Phase 1完了後）\n・本番環境への組み込み\n・パフォーマンスチューニング\n・エンタープライズ向けセキュリティ対応\n\n詳細な提案書を添付いたします。\n6月10日にデモをお見せいたします。",
+      "stage": "proposal",
+      "apis_used": [
+        {
+          "api": "GPT-4o（提案書ドラフト生成）",
+          "type": "openai",
+          "model": "gpt-4o",
+          "description": "自然言語クエリエンジンのPoC提案書を生成。技術仕様・スケジュール・価格を含む",
+          "cost_usd": 0.10
+        },
+        {
+          "api": "NegotiationEngine.init_state()",
+          "type": "local",
+          "description": "交渉状態を初期化。target=3,500,000, floor=2,500,000",
+          "output": {
+            "our_target": 3500000,
+            "our_floor": 2500000,
+            "strategy": "value_based"
+          },
+          "cost": 0
+        },
+        {
+          "api": "SmtpSender.send()",
+          "type": "aiosmtplib",
+          "description": "提案書PDFを添付して送信",
+          "cost": 0
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "direction": "inbound",
+      "from": "高橋 直人 <takahashi@datavis-cloud-example.co.jp>",
+      "to": "真鍋 大度 <bot@mmmmm-example.co.jp>",
+      "subject": "Re: 【DataVis Cloud】— デモ後のフィードバック",
+      "body": "真鍋様\n\n本日のデモ、大変ありがとうございました。\n松田（CTO）も「想像以上の精度」と好印象でした。\n\n社内で検討した結果、PoCを前向きに進めたいと考えています。\nただ、いくつか確認・交渉させてください。\n\n1. 価格について\n   ¥350万はPoC としてはやや高いと感じています。\n   ¥280万程度に調整いただけないでしょうか。\n\n2. 成果物の知的財産権\n   PoC段階で開発されたコードの権利は弊社に帰属しますか。\n\n3. スケジュール\n   7月開始、8月末完了は可能ですか。\n\nお手数ですが、ご検討をお願いいたします。",
+      "stage": "negotiation",
+      "apis_used": [
+        {
+          "api": "NegotiationEngine.analyze_offer()",
+          "type": "openai",
+          "model": "gpt-4o",
+          "mode": "json_object",
+          "description": "価格交渉シグナルの検出。値引き要求¥280万",
+          "output": {
+            "amount": 2800000,
+            "is_counter_offer": true,
+            "discount_request": "¥350万→¥280万（20%減）",
+            "acceptance_signal": false
+          },
+          "cost_usd": 0.03
+        },
+        {
+          "api": "NegotiationEngine.calc_counter_offer()",
+          "type": "local",
+          "description": "カウンターオファー計算。20%の値引きは大きいため中間値で折り合う",
+          "output": {
+            "recommended": 3200000,
+            "reasoning": "¥350万→¥320万に8.6%譲歩。知的財産権は共有とし、本開発フェーズでの優先権を付与"
+          },
+          "cost": 0
+        }
+      ]
+    },
+    {
+      "round": 8,
+      "direction": "outbound",
+      "from": "真鍋 大度 <bot@mmmmm-example.co.jp>",
+      "to": "takahashi@datavis-cloud-example.co.jp",
+      "subject": "Re: 【DataVis Cloud】— 条件調整のご提案",
+      "body": "高橋様\n\nお世話になっております。真鍋です。\nデモをお楽しみいただけたようで何よりです。\n\nご要望について検討いたしました。\n\n1. 価格\n   ¥280万は弊社としても厳しいのですが、\n   御社との長期的な協業を見据えて¥350万で\n   お受けしたいと思います。\n   ただし、PoC成功時にPhase 2を弊社に優先発注\n   いただけることを条件とさせてください。\n\n2. 知的財産権\n   PoC段階のコードは共同著作物として共有とし、\n   弊社の汎用NLQエンジン部分は弊社に帰属、\n   DataVis Cloud固有のカスタマイズ部分は御社に帰属、\n   としたいと思います。\n\n3. スケジュール\n   7月1日開始、8月29日完了で対応可能です。\n\nこの条件でよろしければ、契約書の準備に進みます。",
+      "stage": "negotiation",
+      "apis_used": [
+        {
+          "api": "NegotiationEngine.build_negotiation_context()",
+          "type": "local",
+          "description": "交渉コンテキスト生成。価格維持+長期契約オプションで対応",
+          "cost": 0
+        },
+        {
+          "api": "LlmClient.generate_response()",
+          "type": "openai",
+          "model": "gpt-4o",
+          "description": "交渉戦略プロンプト（negotiation_strategy.txt）を含む返信生成。価格維持だが長期協業のメリットを提示",
+          "cost_usd": 0.07
+        },
+        {
+          "api": "SmtpSender.send()",
+          "type": "aiosmtplib",
+          "description": "SMTP送信",
+          "cost": 0
+        }
+      ]
+    },
+    {
+      "round": 9,
+      "direction": "inbound",
+      "from": "高橋 直人 <takahashi@datavis-cloud-example.co.jp>",
+      "to": "真鍋 大度 <bot@mmmmm-example.co.jp>",
+      "subject": "Re: 【DataVis Cloud】— 条件承諾",
+      "body": "真鍋様\n\n社内で協議した結果、提示いただいた条件で合意いたします。\n\n・金額: ¥3,500,000（税別）\n・知的財産権: 共同著作物（汎用部分=御社、カスタム部分=弊社）\n・スケジュール: 7月1日〜8月29日\n・Phase 2優先発注: 承諾\n\n契約書の準備をお願いいたします。\n弊社法務のCC: legal@datavis-cloud-example.co.jp\n\n7月のキックオフに向けて、API仕様書を事前にお送りします。",
+      "stage": "contract",
+      "apis_used": [
+        {
+          "api": "NegotiationEngine.analyze_offer()",
+          "type": "openai",
+          "description": "合意シグナル検出: acceptance_signal=true",
+          "cost_usd": 0.03
+        },
+        {
+          "api": "ConversationStateMachine.advance()",
+          "type": "local",
+          "description": "negotiation → contract に遷移",
+          "cost": 0
+        }
+      ]
+    },
+    {
+      "round": 10,
+      "direction": "outbound",
+      "from": "真鍋 大度 <bot@mmmmm-example.co.jp>",
+      "to": "takahashi@datavis-cloud-example.co.jp",
+      "subject": "【契約書・請求書送付】自然言語クエリエンジン PoC",
+      "body": "高橋様\n\nお世話になっております。真鍋です。\nご合意いただきありがとうございます。\n\n契約書をクラウドサインで送付いたしました。\nlegal@datavis-cloud-example.co.jp にもCCしております。\n\n【契約概要】\n・業務内容: DataVis Cloud向け自然言語クエリエンジンのPoC開発\n・契約金額: ¥3,500,000（税別）\n・期間: 2026年7月1日〜2026年8月29日\n・知的財産権: 共同著作物（汎用NLQエンジン=弊社、カスタマイズ部分=御社）\n\n着手金の請求書を添付いたします。\n・金額: ¥1,925,000（税込、契約金額の50%）\n・お支払い条件: 請求書受領後30日以内\n\nAPI仕様書をいただき次第、技術検証を開始いたします。\nキックオフミーティングの日程を別途調整させてください。",
+      "stage": "billing",
+      "apis_used": [
+        {
+          "api": "ContractGenerator.generate()",
+          "type": "jinja2",
+          "template": "contract.md.j2",
+          "description": "業務委託契約書をレンダリング。金額¥3,500,000、期間2ヶ月、知的財産権共有条項を含む",
+          "cost": 0
+        },
+        {
+          "api": "InvoiceGenerator.generate()",
+          "type": "jinja2",
+          "template": "invoice.md.j2",
+          "description": "着手金請求書をレンダリング。金額¥1,750,000+税",
+          "cost": 0
+        },
+        {
+          "api": "LlmClient.generate_response()",
+          "type": "openai",
+          "model": "gpt-4o",
+          "description": "契約送付メールの生成",
+          "cost_usd": 0.05
+        },
+        {
+          "api": "Database.save_document()",
+          "type": "aiosqlite",
+          "description": "契約書・請求書をDB保存",
+          "cost": 0
+        },
+        {
+          "api": "DashboardSync.sync_all()",
+          "type": "httpx",
+          "description": "Cloudflare D1にデータ同期",
+          "cost": 0
+        }
+      ]
+    }
+  ],
+
+  "api_summary": {
+    "total_api_calls": 16,
+    "openai_calls": 9,
+    "local_calls": 7,
+    "total_cost_usd": 0.48,
+    "total_cost_jpy": 72,
+    "models_used": ["gpt-4o"],
+    "apis_used_list": [
+      "EmailParser.is_sales_email() -- キーワードヒューリスティクス",
+      "EmailParser.extract() -- GPT-4o JSON mode メール構造化抽出",
+      "LlmClient.generate_response() -- GPT-4o 返信文生成",
+      "GPT-4o（製品弱点分析） -- 相手製品のAI機能ギャップ分析",
+      "GPT-4o（提案書生成） -- PoC提案書ドラフト",
+      "NegotiationEngine.init_state() -- 交渉状態初期化",
+      "NegotiationEngine.analyze_offer() -- GPT-4o 交渉シグナル検出",
+      "NegotiationEngine.calc_counter_offer() -- カウンターオファー計算",
+      "NegotiationEngine.build_negotiation_context() -- 交渉コンテキスト生成",
+      "ContractGenerator.generate() -- Jinja2 契約書",
+      "InvoiceGenerator.generate() -- Jinja2 請求書",
+      "Database.* -- aiosqlite 永続化",
+      "SmtpSender.send() -- aiosmtplib メール送信",
+      "DashboardSync.sync_all() -- httpx Cloudflare D1同期"
+    ]
+  },
+
+  "implementation_details": {
+    "new_features_required": [
+      {
+        "name": "ProductWeaknessAnalyzer",
+        "description": "営業先のSaaS製品のAI機能ギャップを自動分析し、逆提案の機会を検出する機能",
+        "api": "GPT-4o",
+        "location": "src/mirror/conversation/reverse_proposal.py（新規）"
+      },
+      {
+        "name": "ReverseProposalGenerator",
+        "description": "相手製品の弱点から逆提案（PoC/開発案件）のドラフトを自動生成",
+        "api": "GPT-4o + Jinja2",
+        "location": "src/mirror/documents/proposal_generator.py に追加"
+      }
+    ],
+    "existing_features_used": [
+      "EmailParser -- メール解析・営業判定",
+      "ConversationStateMachine -- 7段階ステージ管理",
+      "NegotiationEngine -- オファー追跡・カウンター計算",
+      "ContractGenerator -- 契約書生成",
+      "InvoiceGenerator -- 請求書生成",
+      "LlmClient -- 返信生成",
+      "Database -- 会話・メッセージ永続化",
+      "DashboardSync -- ダッシュボード同期"
+    ]
+  }
+}

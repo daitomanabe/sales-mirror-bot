@@ -1,0 +1,382 @@
+{
+  "episode_id": "EP-05",
+  "title": "比較ビズ 相見積もりからRAG案件受注",
+  "result": "SUCCESS",
+  "summary": "見積もり比較サイトの3社相見積もり案件。GPT-4oで競合価格を分析し最適価格で入札、¥1,150万で受注。",
+  "financial": {
+    "revenue": 11500000,
+    "costs": {
+      "platform_fee": 230000,
+      "api_cost": 150,
+      "referral_fee": 0
+    },
+    "net_profit": 11269850
+  },
+  "metadata": {
+    "rounds": 10,
+    "duration_days": 18,
+    "human_intervention": 0,
+    "final_stage": "billing",
+    "sender_type": "matching_platform"
+  },
+
+  "exchanges": [
+    {
+      "round": 1,
+      "direction": "inbound",
+      "from": "比較ビズ事務局 <matching@hikaku-biz-example.jp>",
+      "to": "真鍋 大度 <bot@mmmmm-example.co.jp>",
+      "subject": "【比較ビズ】AI開発案件のご紹介（3社相見積もり）",
+      "body": "真鍋様\n\n比較ビズをご利用いただきありがとうございます。\n下記の案件にマッチングいたしましたのでご案内いたします。\n\n【案件概要】\n案件名: 社内ナレッジ検索システムのAI化\n業種: 大手製薬会社（従業員3,000名）\n予算: 1,000万〜1,500万円\n期間: 6ヶ月\n要件:\n- 社内文書（10万件）のベクトル化\n- RAGベースの質問応答システム構築\n- 既存SharePointとの連携\n- セキュリティ要件（オンプレ or プライベートクラウド）\n\n相見積もり: 3社（貴社含む）\n回答期限: 5月20日（火）\n\nご対応いただける場合は、本メールに返信ください。\nクライアント様の連絡先をお送りいたします。",
+      "stage": "initial_response",
+      "apis_used": [
+        {
+          "api": "EmailParser.is_sales_email()",
+          "type": "local",
+          "description": "キーワードヒューリスティクスで営業メール判定",
+          "keywords_matched": ["ご案内", "案件", "予算", "ご紹介"],
+          "cost": 0
+        },
+        {
+          "api": "EmailParser.extract()",
+          "type": "openai",
+          "model": "gpt-4o",
+          "mode": "json_object",
+          "temperature": 0.1,
+          "description": "メールから構造化情報を抽出",
+          "output": {
+            "company_name": "比較ビズ（クライアント: 大手製薬会社）",
+            "service_type": "RAGシステム構築案件紹介",
+            "budget_low": 10000000,
+            "budget_high": 15000000,
+            "platform": "比較ビズ"
+          },
+          "cost_usd": 0.03
+        },
+        {
+          "api": "Database.upsert_conversation()",
+          "type": "local",
+          "description": "新規会話をSQLiteに保存",
+          "cost": 0
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "direction": "outbound",
+      "from": "真鍋 大度 <bot@mmmmm-example.co.jp>",
+      "to": "matching@hikaku-biz-example.jp",
+      "subject": "Re: 【比較ビズ】AI開発案件のご紹介",
+      "body": "比較ビズ事務局 御中\n\n株式会社mmmmmの真鍋です。\n本案件、ぜひ対応させていただきたいです。\n\nRAGシステムの構築は弊社の最も得意とする領域で、\n直近6ヶ月で3件の類似案件を納品しております。\n特にオンプレ/プライベートクラウド要件への対応実績も豊富です。\n\nクライアント様の連絡先をお送りください。\n回答期限までに見積書と提案書を提出いたします。",
+      "stage": "initial_response",
+      "apis_used": [
+        {
+          "api": "LlmClient.generate_response()",
+          "type": "openai",
+          "model": "gpt-4o",
+          "temperature": 0.7,
+          "max_tokens": 1500,
+          "description": "初回返信を生成。system.txtのペルソナ + initial_response指示",
+          "prompt_components": ["prompts/system.txt", "STAGE_INSTRUCTIONS[initial_response]", "extracted_info context"],
+          "cost_usd": 0.05
+        },
+        {
+          "api": "SmtpSender.send()",
+          "type": "aiosmtplib",
+          "description": "SMTP送信。In-Reply-To/Referencesヘッダでスレッド維持",
+          "cost": 0
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "direction": "inbound",
+      "from": "藤田 健一 <fujita@pharma-example.co.jp>",
+      "to": "bot@mmmmm-example.co.jp",
+      "subject": "ナレッジ検索AI化の件",
+      "body": "真鍋様\n\n比較ビズ経由でご連絡いただきました。\n大手製薬のIT部門の藤田です。\n\n要件の詳細をお送りします：\n- 対象文書: 研究論文、SOP、規制文書（日英混在）\n- ユーザー数: 500名\n- レスポンス: 3秒以内\n- セキュリティ: Azure Private Link必須\n- 既存環境: Azure AD + SharePoint Online\n\nご質問等あればお知らせください。",
+      "stage": "meeting_setup",
+      "apis_used": [
+        {
+          "api": "ConversationStateMachine.advance()",
+          "type": "local",
+          "description": "inbound 1件でmeeting_setupに遷移",
+          "cost": 0
+        },
+        {
+          "api": "NegotiationEngine.init_state()",
+          "type": "local",
+          "description": "交渉状態を初期化。budget_low=10M, budget_high=15M",
+          "output": {
+            "our_target": 11666666,
+            "our_floor": 8500000,
+            "strategy": "reverse"
+          },
+          "cost": 0
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "direction": "outbound",
+      "from": "真鍋 大度 <bot@mmmmm-example.co.jp>",
+      "to": "fujita@pharma-example.co.jp",
+      "subject": "Re: ナレッジ検索AI化の件 — 確認事項",
+      "body": "藤田様\n\nお世話になっております。真鍋です。\n要件の詳細ありがとうございます。\n\nいくつか追加で確認させてください：\n\n1. 対象文書のフォーマット（PDF/Word/HTML等の比率）\n2. 既存の検索システムの有無と課題\n3. 想定するパイロット部門（全社一斉 or 段階展開）\n4. Azure OpenAI Serviceの利用は許可されていますか\n\nまた、提案前にオンラインで30分ほど要件を深掘りさせていただけると、\nより精度の高い提案ができるかと思います。\n\n来週の候補です：\n- 5月12日（月）14:00〜\n- 5月14日（水）10:00〜",
+      "stage": "meeting_setup",
+      "apis_used": [
+        {
+          "api": "LlmClient.generate_response()",
+          "type": "openai",
+          "model": "gpt-4o",
+          "description": "要件深掘りの質問を生成。製薬業界特有の観点を含める",
+          "cost_usd": 0.05
+        },
+        {
+          "api": "MeetingScheduler.generate_proposals()",
+          "type": "local",
+          "description": "来週の営業日から候補日を自動生成",
+          "cost": 0
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "direction": "inbound",
+      "from": "藤田 健一 <fujita@pharma-example.co.jp>",
+      "to": "bot@mmmmm-example.co.jp",
+      "subject": "Re: ナレッジ検索AI化の件 — 回答",
+      "body": "真鍋様\n\n回答します：\n1. PDF 60%、Word 30%、HTML 10%\n2. SharePoint標準検索を使用中。精度に不満あり\n3. 研究開発部門（200名）からパイロット\n4. Azure OpenAI Serviceは社内承認済み\n\n5月14日（水）10:00〜でお願いします。\nTeamsリンクをお送りします。\n\nなお、他2社も同時並行で話を進めています。\n回答期限の5月20日までに提案書をいただけると助かります。",
+      "stage": "proposal",
+      "apis_used": [
+        {
+          "api": "MeetingScheduler.extract_dates()",
+          "type": "openai",
+          "model": "gpt-4o",
+          "mode": "json_object",
+          "description": "確定日時を構造化抽出",
+          "output": {
+            "confirmed_date": {"date": "2025-05-14", "time": "10:00"},
+            "meeting_tool": "teams"
+          },
+          "cost_usd": 0.03
+        },
+        {
+          "api": "GPT-4o（競合分析）",
+          "type": "openai",
+          "model": "gpt-4o",
+          "description": "3社相見積もりでの価格戦略分析。大手SIer=¥1,400万、スタートアップ=¥900万と予測。最適価格=¥1,200万",
+          "prompt_summary": "案件スペックから競合2社の想定見積もりを推定し、勝率が最も高い価格帯を算出",
+          "cost_usd": 0.07
+        }
+      ],
+      "implementation_note": "競合分析はNegotiationEngineの拡張機能として実装。相見積もり案件では自動的に競合価格を推定する"
+    },
+    {
+      "round": 6,
+      "direction": "outbound",
+      "from": "真鍋 大度 <bot@mmmmm-example.co.jp>",
+      "to": "fujita@pharma-example.co.jp",
+      "subject": "【ご提案】ナレッジ検索AI化プロジェクト",
+      "body": "藤田様\n\nお世話になっております。真鍋です。\n先日のお打ち合わせありがとうございました。\n\n提案書と見積書を添付いたします。\n\n【提案のポイント】\n1. 製薬業界の規制文書（GxP/SOP）に最適化したRAGパイプライン\n2. 日英混在文書のマルチリンガルembedding（multilingual-e5-large）\n3. Azure Private Link + Azure OpenAI Serviceで完全閉域網\n4. 段階導入: PoC（研究開発部門200名）→ 全社展開\n\n【見積もり】¥12,000,000（税別）\n- フェーズ1 PoC: ¥3,000,000（2ヶ月）\n- フェーズ2 本開発: ¥7,000,000（3ヶ月）\n- フェーズ3 導入・チューニング: ¥2,000,000（1ヶ月）\n\n回答期限までにご質問等あれば、いつでもご連絡ください。",
+      "stage": "proposal",
+      "apis_used": [
+        {
+          "api": "GPT-4o（提案書ドラフト生成）",
+          "type": "openai",
+          "model": "gpt-4o",
+          "description": "案件要件+競合分析結果から提案書の本文を生成。製薬業界特有の用語（GxP等）を含む",
+          "cost_usd": 0.10
+        },
+        {
+          "api": "Jinja2（見積書テンプレート）",
+          "type": "local",
+          "template": "invoice.md.j2（見積書用に拡張）",
+          "description": "フェーズ分割の見積書をレンダリング",
+          "cost": 0
+        }
+      ],
+      "implementation_note": "提案書生成は新規機能 ProposalGenerator として実装。GPT-4oで本文を生成し、Jinja2テンプレートでフォーマット"
+    },
+    {
+      "round": 7,
+      "direction": "inbound",
+      "from": "藤田 健一 <fujita@pharma-example.co.jp>",
+      "to": "bot@mmmmm-example.co.jp",
+      "subject": "Re: 【ご提案】ナレッジ検索AI化プロジェクト",
+      "body": "真鍋様\n\n提案書拝見しました。技術面では非常に好印象です。\n特にGxP文書への理解が深い点が高く評価されています。\n\n1点、価格について相談です。\n社内稟議の都合上¥1,100万以内に収まると通りやすいのですが、\n調整は可能でしょうか。\n\nまた、PoCで期待する精度目標があれば教えてください。",
+      "stage": "negotiation",
+      "apis_used": [
+        {
+          "api": "NegotiationEngine.analyze_offer()",
+          "type": "openai",
+          "model": "gpt-4o",
+          "mode": "json_object",
+          "description": "価格交渉シグナルの検出。値引き要求¥1,100万",
+          "output": {
+            "amount": 11000000,
+            "is_counter_offer": true,
+            "discount_request": "¥1,200万→¥1,100万（8.3%減）",
+            "acceptance_signal": false
+          },
+          "cost_usd": 0.03
+        },
+        {
+          "api": "NegotiationEngine.calc_counter_offer()",
+          "type": "local",
+          "description": "カウンターオファー計算。round=1、stratey=reverse",
+          "output": {
+            "recommended": 11500000,
+            "reasoning": "初回交渉。¥1,200万→¥1,150万に4%譲歩。フェーズ3を圧縮して調整"
+          },
+          "cost": 0
+        }
+      ]
+    },
+    {
+      "round": 8,
+      "direction": "outbound",
+      "from": "真鍋 大度 <bot@mmmmm-example.co.jp>",
+      "to": "fujita@pharma-example.co.jp",
+      "subject": "Re: 【ご提案】ナレッジ検索AI化プロジェクト — 価格調整",
+      "body": "藤田様\n\nお世話になっております。真鍋です。\n\nご予算のご事情、承知いたしました。\n以下のように調整いたします：\n\n【改訂見積もり】¥11,500,000（税別）\n- フェーズ1 PoC: ¥3,000,000\n- フェーズ2 本開発: ¥6,500,000\n- フェーズ3 導入: ¥2,000,000\n\n¥50万の削減はフェーズ2の一部機能をPoC後の判断に委ねることで実現します。\nPoC精度目標: 検索精度（MRR@10）0.85以上を目指します。\n\nこの条件でよろしければ、契約書の準備に進ませていただきます。",
+      "stage": "negotiation",
+      "apis_used": [
+        {
+          "api": "NegotiationEngine.build_negotiation_context()",
+          "type": "local",
+          "description": "交渉コンテキスト生成。オファー履歴+推奨金額を含む",
+          "cost": 0
+        },
+        {
+          "api": "LlmClient.generate_response()",
+          "type": "openai",
+          "model": "gpt-4o",
+          "description": "交渉戦略プロンプト（negotiation_strategy.txt）を含む返信生成",
+          "cost_usd": 0.07
+        }
+      ]
+    },
+    {
+      "round": 9,
+      "direction": "inbound",
+      "from": "藤田 健一 <fujita@pharma-example.co.jp>",
+      "to": "bot@mmmmm-example.co.jp",
+      "subject": "Re: 【ご提案】— 選定のご連絡",
+      "body": "真鍋様\n\n社内選定の結果、貴社に決定いたしました。\n¥11,500,000の条件で問題ございません。\n\n契約書の準備をお願いいたします。\n弊社法務のCC: legal@pharma-example.co.jp\n\n6月1日からの着手を希望しています。",
+      "stage": "contract",
+      "apis_used": [
+        {
+          "api": "NegotiationEngine.analyze_offer()",
+          "type": "openai",
+          "description": "合意シグナル検出: acceptance_signal=true",
+          "cost_usd": 0.03
+        },
+        {
+          "api": "ConversationStateMachine.advance()",
+          "type": "local",
+          "description": "negotiation → contract",
+          "cost": 0
+        }
+      ]
+    },
+    {
+      "round": 10,
+      "direction": "outbound",
+      "from": "真鍋 大度 <bot@mmmmm-example.co.jp>",
+      "to": "fujita@pharma-example.co.jp",
+      "subject": "【契約書・請求書送付】ナレッジ検索AI化プロジェクト",
+      "body": "藤田様\n\nお世話になっております。真鍋です。\n選定いただきありがとうございます！\n\n契約書をクラウドサインで送付いたしました。\nlegal@pharma-example.co.jp にもCCしております。\n\n着手金（フェーズ1 PoC分）の請求書を添付いたします。\n- 金額: ¥3,300,000（税込）\n- お支払い条件: 請求書受領後30日以内\n\n6月1日のキックオフに向けて準備を進めます。\n来週中にプロジェクト計画書をお送りしますので、\nSharePoint環境へのアクセス権付与をお願いいたします。",
+      "stage": "billing",
+      "apis_used": [
+        {
+          "api": "ContractGenerator.generate()",
+          "type": "jinja2",
+          "template": "contract.md.j2",
+          "description": "業務委託契約書をレンダリング。金額¥11,500,000、期間6ヶ月",
+          "cost": 0
+        },
+        {
+          "api": "InvoiceGenerator.generate()",
+          "type": "jinja2",
+          "template": "invoice.md.j2",
+          "description": "着手金請求書をレンダリング。金額¥3,000,000+税",
+          "cost": 0
+        },
+        {
+          "api": "Database.save_document()",
+          "type": "aiosqlite",
+          "description": "契約書・請求書をDB保存",
+          "cost": 0
+        },
+        {
+          "api": "LlmClient.generate_response()",
+          "type": "openai",
+          "model": "gpt-4o",
+          "description": "契約送付メールの生成",
+          "cost_usd": 0.05
+        },
+        {
+          "api": "DashboardSync.sync_all()",
+          "type": "httpx",
+          "description": "Cloudflare D1にデータ同期",
+          "cost": 0
+        }
+      ]
+    }
+  ],
+
+  "api_summary": {
+    "total_api_calls": 14,
+    "openai_calls": 9,
+    "local_calls": 5,
+    "total_cost_usd": 0.51,
+    "total_cost_jpy": 76,
+    "models_used": ["gpt-4o"],
+    "apis_used_list": [
+      "EmailParser.is_sales_email() — キーワードヒューリスティクス",
+      "EmailParser.extract() — GPT-4o JSON mode メール構造化抽出",
+      "LlmClient.generate_response() — GPT-4o 返信文生成",
+      "MeetingScheduler.generate_proposals() — 営業日候補自動生成",
+      "MeetingScheduler.extract_dates() — GPT-4o 日程抽出",
+      "NegotiationEngine.init_state() — 交渉状態初期化",
+      "NegotiationEngine.analyze_offer() — GPT-4o 交渉シグナル検出",
+      "NegotiationEngine.calc_counter_offer() — カウンターオファー計算",
+      "NegotiationEngine.build_negotiation_context() — 交渉コンテキスト生成",
+      "GPT-4o（競合分析） — 相見積もり価格戦略",
+      "GPT-4o（提案書生成） — 案件特化の提案書ドラフト",
+      "ContractGenerator.generate() — Jinja2 契約書",
+      "InvoiceGenerator.generate() — Jinja2 請求書",
+      "Database.* — aiosqlite 永続化",
+      "SmtpSender.send() — aiosmtplib メール送信",
+      "DashboardSync.sync_all() — httpx Cloudflare D1同期"
+    ]
+  },
+
+  "implementation_details": {
+    "new_features_required": [
+      {
+        "name": "CompetitiveAnalyzer",
+        "description": "相見積もり案件で競合の想定価格を予測し、最適入札価格を算出",
+        "api": "GPT-4o",
+        "location": "src/mirror/conversation/negotiation.py に追加"
+      },
+      {
+        "name": "ProposalGenerator",
+        "description": "案件要件から提案書のドラフトを自動生成。業界特化の用語・実績を含む",
+        "api": "GPT-4o + Jinja2",
+        "location": "src/mirror/documents/proposal_generator.py（新規）"
+      }
+    ],
+    "existing_features_used": [
+      "EmailParser — メール解析・営業判定",
+      "ConversationStateMachine — 7段階ステージ管理",
+      "NegotiationEngine — オファー追跡・カウンター計算",
+      "MeetingScheduler — 日程提案・抽出",
+      "ContractGenerator — 契約書生成",
+      "InvoiceGenerator — 請求書生成",
+      "Database — 会話・メッセージ永続化",
+      "DashboardSync — ダッシュボード同期"
+    ]
+  }
+}

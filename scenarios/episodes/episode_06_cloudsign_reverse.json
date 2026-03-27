@@ -1,0 +1,159 @@
+{
+  "episode_id": "EP-06",
+  "title": "CloudSign営業 → API連携の契約自動化システム開発を逆受注",
+  "result": "SUCCESS",
+  "summary": "電子署名サービスの導入営業に対し、ツール自体は導入しつつ、相手のAPI連携機能の弱さを指摘。自社AI×CloudSign APIで契約書自動生成・自動署名システムの開発を逆提案し、¥600万のPoC受注。",
+  "financial": {
+    "revenue": 6000000,
+    "costs": {"api_cost": 120, "cloudsign_monthly": 10000},
+    "net_profit": 5989880
+  },
+  "metadata": {
+    "rounds": 12,
+    "duration_days": 25,
+    "human_intervention": 0,
+    "final_stage": "billing",
+    "sender_type": "saas_sales"
+  },
+  "exchanges": [
+    {
+      "round": 1,
+      "direction": "inbound",
+      "from": "森田 亮 <morita@cloudsign-example.co.jp>",
+      "subject": "電子契約サービス「クラウドサイン」導入のご提案",
+      "body": "真鍋様\n\nお世話になっております。\n弁護士ドットコムグループ クラウドサイン営業部の森田です。\n\n貴社の事業拡大に伴い、契約業務の効率化にご関心はございませんか。\n\nクラウドサインは導入社数250万社以上の電子契約サービスです。\n- 契約締結時間を90%短縮\n- 印紙税ゼロ\n- 月額10,000円〜\n\n無料トライアル（14日間）もございます。\n15分のオンラインデモはいかがでしょうか。",
+      "stage": "initial_response",
+      "apis_used": [
+        {"api": "EmailParser.is_sales_email()", "type": "local", "cost": 0},
+        {"api": "EmailParser.extract()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.03, "output": {"company_name": "クラウドサイン", "service_type": "電子契約SaaS", "budget_low": null, "platform": ""}}
+      ]
+    },
+    {
+      "round": 2,
+      "direction": "outbound",
+      "subject": "Re: 電子契約サービス「クラウドサイン」導入のご提案",
+      "body": "森田様\n\nお世話になっております。株式会社mmmmmの真鍋です。\n\nクラウドサインのご提案、ありがとうございます。\n弊社でも契約書の電子化を検討しておりましたので、大変タイムリーです。\n\nいくつか確認させてください：\n\n1. APIは公開されていますか？自社システムとの連携を考えています\n2. 契約書テンプレートの自動入力機能はありますか\n3. 他のAI系ツールとの連携事例はありますか\n4. エンタープライズプランの料金体系は？\n\n弊社はAI開発企業でして、契約業務のAI自動化に非常に興味があります。\nデモ、ぜひお願いいたします。",
+      "stage": "initial_response",
+      "apis_used": [
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.05, "description": "API連携への関心を示しつつ、逆提案の伏線を張る"}
+      ]
+    },
+    {
+      "round": 3,
+      "direction": "inbound",
+      "subject": "Re: クラウドサイン — API・連携のご質問",
+      "body": "真鍋様\n\nご質問の回答です：\n\n1. REST APIを公開しています。契約書の作成・送信・ステータス確認が可能です\n2. テンプレート機能あり。ただし自動入力はCSVアップロードのみ\n3. AI連携事例はまだ少ないのが正直なところです\n4. エンタープライズ: 月額100,000円〜（要相談）\n\nAI開発企業様とのお話は大変興味深いです。\nデモは来週いかがでしょうか。上司の鈴木も同席させます。",
+      "stage": "meeting_setup",
+      "apis_used": [
+        {"api": "MeetingScheduler.generate_proposals()", "type": "local", "cost": 0},
+        {"api": "ConversationStateMachine.advance()", "type": "local", "description": "initial_response → meeting_setup"}
+      ]
+    },
+    {
+      "round": 4,
+      "direction": "outbound",
+      "subject": "Re: クラウドサイン — デモ日程",
+      "body": "森田様\n\n鈴木様にもご同席いただけるとのこと、ありがとうございます。\n\n来週の候補です：\n- 5月19日（月）14:00〜\n- 5月21日（水）10:00〜\n\nデモでは特にAPI機能を重点的にご説明いただけると助かります。\n\n実は弊社で、AIを使った契約書の自動生成・自動レビューシステムを\n開発しておりまして、クラウドサインのAPIとの連携で\n面白いことができるのではと考えています。\n\nデモの際に少しお時間をいただき、弊社側のアイデアも\nご紹介させていただけますでしょうか。",
+      "stage": "meeting_setup",
+      "apis_used": [
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.05}
+      ]
+    },
+    {
+      "round": 5,
+      "direction": "inbound",
+      "subject": "Re: クラウドサイン — デモ確定",
+      "body": "真鍋様\n\n5月21日（水）10:00〜で確定です。\nZoomリンクは前日にお送りします。\n\n契約書の自動生成・自動レビューですか！\n弊社としても非常に興味があるテーマです。\n\nぜひデモの後半でお聞かせください。\n鈴木はプロダクト開発の責任者なので、\n技術的な議論もできると思います。",
+      "stage": "proposal",
+      "apis_used": [
+        {"api": "MeetingScheduler.extract_dates()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.03}
+      ]
+    },
+    {
+      "round": 6,
+      "direction": "outbound",
+      "subject": "Re: クラウドサイン — デモ後のご提案",
+      "body": "森田様、鈴木様\n\nデモありがとうございました。\nクラウドサインの導入を前向きに進めたいと思います。\nエンタープライズプランでお見積もりをお願いいたします。\n\nさて、デモ後にお話しした弊社の提案について整理しました：\n\n【AI × クラウドサイン 契約自動化システム】\n\n現状の課題（鈴木様からもご指摘あり）：\n- テンプレートへの自動入力がCSVのみで手作業が多い\n- 契約書のAIレビュー機能がない\n- 取引先情報の自動反映ができない\n\n弊社が開発できるソリューション：\n1. AIによる契約書自動生成（取引先情報→契約書ドラフト）\n2. AIレビュー（リスク条項の自動検出・修正提案）\n3. クラウドサインAPI連携（生成→署名依頼を自動化）\n4. CRM連携（Salesforce等→契約書→署名→保管を一気通貫）\n\n予算感: PoC ¥300万、本開発 ¥300万\n\nクラウドサインの付加価値を大幅に高めるプロダクトとして、\n御社のクライアント様への提供も可能かと考えています。\nぜひ鈴木様と具体的にお話しさせてください。",
+      "stage": "proposal",
+      "apis_used": [
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.07, "description": "逆提案の生成。デモで得た情報（CSVのみ・AIレビューなし）を活用"}
+      ]
+    },
+    {
+      "round": 7,
+      "direction": "inbound",
+      "subject": "Re: AI × クラウドサイン — 社内検討結果",
+      "body": "真鍋様\n\n鈴木です。ご提案を社内で検討しました。\n\n正直、AIによる契約書自動生成は弊社ロードマップにも\n含まれている機能で、外部開発の可能性を検討していました。\n\nただ、予算¥600万（PoC+本開発）は弊社の想定よりやや高めです。\n¥400万〜¥500万の範囲で検討できないでしょうか。\n\nまた、開発成果物の知的財産権についても確認したいです。",
+      "stage": "negotiation",
+      "apis_used": [
+        {"api": "NegotiationEngine.analyze_offer()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.03, "output": {"amount": 4500000, "is_counter_offer": true}},
+        {"api": "NegotiationEngine.calc_counter_offer()", "type": "local", "output": {"recommended": 5500000}}
+      ]
+    },
+    {
+      "round": 8,
+      "direction": "outbound",
+      "subject": "Re: AI × クラウドサイン — 条件調整",
+      "body": "鈴木様\n\n真鍋です。ご検討ありがとうございます。\n\n予算について調整いたしました：\n\n【改訂見積もり】¥5,500,000（税別）\n- PoC（AIレビュー機能）: ¥2,500,000（2ヶ月）\n- 本開発（自動生成+API連携）: ¥3,000,000（3ヶ月）\n\n知的財産権について：\n- 弊社の汎用AIエンジン部分: 弊社に帰属\n- クラウドサイン連携部分・カスタム機能: 御社に帰属\n- 弊社は類似プロダクトを他の電子署名サービスに提供しない（1年間）\n\nPoC成果が良好であれば月額保守契約もご提案いたします。",
+      "stage": "negotiation",
+      "apis_used": [
+        {"api": "NegotiationEngine.build_negotiation_context()", "type": "local", "cost": 0},
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.07}
+      ]
+    },
+    {
+      "round": 9,
+      "direction": "inbound",
+      "subject": "Re: AI × クラウドサイン — 合意",
+      "body": "真鍋様\n\n¥5,500,000の条件と知的財産権の整理、了承いたしました。\n競業避止1年間も問題ございません。\n\n契約書の準備をお願いいたします。\n弊社法務: legal@cloudsign-example.co.jp\n\n7月1日からのPoC開始を希望します。",
+      "stage": "contract",
+      "apis_used": [
+        {"api": "NegotiationEngine.analyze_offer()", "type": "openai", "cost_usd": 0.03, "output": {"acceptance_signal": true}},
+        {"api": "ConversationStateMachine.advance()", "type": "local", "description": "negotiation → contract"}
+      ]
+    },
+    {
+      "round": 10,
+      "direction": "outbound",
+      "subject": "Re: AI × クラウドサイン — 契約書送付",
+      "body": "鈴木様\n\n契約書をクラウドサイン（御社サービス！）で送付いたしました。\nlegal@cloudsign-example.co.jp にもCCしております。\n\n主な条項：\n- 業務内容: AI契約書自動生成・レビューシステムの開発\n- 契約金額: ¥5,500,000（税別）\n- 期間: 5ヶ月（PoC 2ヶ月 + 本開発 3ヶ月）\n- 知的財産権: 上記合意の通り\n\nPoC着手金の請求書を添付いたします。\n- ¥2,750,000（税込）\n\n7月のキックオフに向けて準備を進めます。",
+      "stage": "billing",
+      "apis_used": [
+        {"api": "ContractGenerator.generate()", "type": "jinja2", "template": "contract.md.j2", "cost": 0},
+        {"api": "InvoiceGenerator.generate()", "type": "jinja2", "template": "invoice.md.j2", "cost": 0},
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.05},
+        {"api": "Database.save_document()", "type": "aiosqlite", "cost": 0}
+      ]
+    },
+    {
+      "round": 11,
+      "direction": "inbound",
+      "subject": "クラウドサイン エンタープライズプラン お見積もり",
+      "body": "真鍋様\n\n別件でクラウドサインのエンタープライズプランのお見積もりです。\n月額50,000円（年間契約）のところ、\n開発パートナー様特別価格として月額30,000円でご提供いたします。\n\nまた、AI連携開発に必要なサンドボックス環境もご用意しますので、\nAPIの動作確認にお使いください。",
+      "stage": "billing",
+      "apis_used": []
+    },
+    {
+      "round": 12,
+      "direction": "outbound",
+      "subject": "Re: クラウドサイン エンタープライズプラン — 了承",
+      "body": "森田様\n\n特別価格ありがとうございます。月額30,000円で了承いたします。\nサンドボックス環境もありがたいです。\n\n開発が完了しましたら、御社のクライアント様への\n展開についてもご相談させてください。\n\n引き続きよろしくお願いいたします。",
+      "stage": "billing",
+      "apis_used": [
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.05}
+      ]
+    }
+  ],
+  "api_summary": {
+    "total_api_calls": 16,
+    "openai_calls": 10,
+    "total_cost_usd": 0.51,
+    "total_cost_jpy": 76
+  },
+  "implementation_details": {
+    "new_features_required": [
+      {"name": "SaaS逆提案テンプレート", "description": "デモ参加後に相手プロダクトの弱点を指摘し、AI強化を提案するパターン", "location": "prompts/reverse_proposal.txt"}
+    ],
+    "key_insight": "電子署名サービスの営業を受ける→導入しつつ→相手のプロダクトに自社AI技術を売り込む。クラウドサインで契約書を送るという行為自体が、相手のサービスを使っている実績になる。"
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "episode_id": "EP-08",
+  "title": "AWS営業 → AI基盤MSPパートナー契約で月額50万の継続収入",
+  "result": "SUCCESS",
+  "summary": "AWSの「$5,000クレジット進呈」営業に対し、クレジットは受け取りつつ、AWS上でのAI基盤構築のマネージドサービス（MSP）パートナー契約を逆提案。月額50万円の継続収入を確立。",
+  "financial": {
+    "revenue_annual": 6000000,
+    "costs": {"api_cost": 90},
+    "net_profit_annual": 5999910,
+    "bonus": "AWS $5,000クレジット獲得"
+  },
+  "metadata": {
+    "rounds": 10,
+    "duration_days": 22,
+    "human_intervention": 0,
+    "final_stage": "billing",
+    "sender_type": "cloud_vendor"
+  },
+  "exchanges": [
+    {
+      "round": 1,
+      "direction": "inbound",
+      "from": "松岡 恵理 <matsuoka@aws-partner-example.co.jp>",
+      "subject": "【AWS】AI/MLワークロード向け特別クレジットのご案内",
+      "body": "真鍋様\n\nAmazon Web Services パートナーソリューション部の松岡です。\n\n貴社のAI開発事業について、AWSの活用状況を伺いたくご連絡しました。\n\n現在、AI/ML分野で成長中の企業様向けに\nAWSクレジット$5,000（約¥75万円分）を進呈するプログラムを\n実施しております。\n\n対象サービス:\n- Amazon SageMaker\n- Amazon Bedrock\n- Amazon Q\n- その他AI/MLサービス全般\n\n15分のヒアリングにご協力いただけますと、\n貴社に最適なAWS活用プランもご提案いたします。\n\nまずはオンラインでお話しさせていただけませんか。",
+      "stage": "initial_response",
+      "apis_used": [
+        {"api": "EmailParser.is_sales_email()", "type": "local", "cost": 0},
+        {"api": "EmailParser.extract()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.03}
+      ]
+    },
+    {
+      "round": 2,
+      "direction": "outbound",
+      "subject": "Re: 【AWS】AI/MLワークロード向けクレジット",
+      "body": "松岡様\n\nお世話になっております。株式会社mmmmmの真鍋です。\n\nAWSクレジットのご案内ありがとうございます。\n弊社は現在AWS上でAI基盤を構築しておりまして、\nSageMakerとBedrockは日常的に使用しています。\n\nクレジットは大変ありがたいです。ぜひ申請させてください。\n\nいくつか伺いたい点があります：\n1. クレジットの利用期限と対象サービスの制限\n2. AWSパートナープログラム（テクノロジーパートナー）への参加要件\n3. 弊社のようなAI開発企業がMSPパートナーになる道筋\n\n実は弊社のクライアント企業にもAWS上でのAI基盤構築を\n提案する機会が増えておりまして、パートナーとして\n活動できると双方にメリットがあるのではと考えています。\n\nお打ち合わせ、ぜひお願いいたします。",
+      "stage": "initial_response",
+      "apis_used": [
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.05, "description": "クレジットを受けつつ、パートナープログラムへの関心を示す"}
+      ]
+    },
+    {
+      "round": 3,
+      "direction": "inbound",
+      "subject": "Re: AWSパートナープログラムについて",
+      "body": "真鍋様\n\nご回答です：\n1. クレジット: 6ヶ月有効、AI/MLサービス全般で利用可能\n2. テクノロジーパートナー: AWS上でのソリューション実績があれば申請可能\n3. MSPパートナー: 運用管理の実績が必要ですが、段階的に取得可能です\n\nパートナーへのご関心、大変嬉しいです。\n弊社のパートナー担当の吉田も交えてお話しできればと思います。\n\n来週のご都合はいかがでしょうか。",
+      "stage": "meeting_setup",
+      "apis_used": [
+        {"api": "MeetingScheduler.generate_proposals()", "type": "local", "cost": 0}
+      ]
+    },
+    {
+      "round": 4,
+      "direction": "outbound",
+      "subject": "Re: AWSパートナープログラム — 打合せ候補",
+      "body": "松岡様\n\n吉田様にもご同席いただけるとのこと、ありがとうございます。\n\n候補日：\n- 5月19日（月）14:00〜15:00\n- 5月21日（水）10:00〜11:00\n\n打合せでは以下を議論したいです：\n1. テクノロジーパートナー登録の具体的なステップ\n2. 弊社クライアント向けのAWS基盤構築サービスの設計\n3. AWS Marketplaceへのソリューション掲載の可能性\n\n弊社のAWS利用実績と主要プロジェクトの概要を\n事前にお送りいたします。",
+      "stage": "meeting_setup",
+      "apis_used": [
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.05}
+      ]
+    },
+    {
+      "round": 5,
+      "direction": "inbound",
+      "subject": "Re: 打合せ確定",
+      "body": "真鍋様\n\n5月21日（水）10:00〜で確定です。\n\n打合せの結果、テクノロジーパートナー登録は\nスムーズに進められそうです。\n弊社からもサポートいたします。\n\nまた、真鍋様のクライアント向けAI基盤構築ですが、\nAWS側で「AI Competency」という認定があり、\n取得されると弊社からの案件紹介も可能になります。\n\n打合せ楽しみにしております。",
+      "stage": "proposal",
+      "apis_used": [
+        {"api": "MeetingScheduler.extract_dates()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.03}
+      ]
+    },
+    {
+      "round": 6,
+      "direction": "outbound",
+      "subject": "Re: 打合せ後 — MSPサービス提案",
+      "body": "松岡様、吉田様\n\n打合せありがとうございました。\nテクノロジーパートナー登録を進めたいと思います。\n\nさて、打合せで議論した内容を整理しました：\n\n【提案: AI基盤マネージドサービス（MSP）】\n弊社がAWSパートナーとして、中堅企業向けに\nAI基盤の構築・運用をマネージドサービスとして提供します。\n\nサービス内容:\n- AWS環境のAI基盤設計・構築\n- SageMaker/Bedrockの初期設定・最適化\n- 月次の運用監視・コスト最適化\n- AIモデルの定期チューニング\n\n価格: 月額¥500,000/社（年間契約）\n\n弊社が直接クライアントと契約し、\nAWS利用料は別途クライアント負担。\n弊社のMSP売上の一部がAWS側のパートナー実績にもなります。\n\nまず弊社の既存クライアント3社で開始し、\n6ヶ月で10社への拡大を目指します。",
+      "stage": "proposal",
+      "apis_used": [
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.07, "description": "MSPサービス提案の生成。AWSパートナー経済圏を活用したビジネスモデル"}
+      ]
+    },
+    {
+      "round": 7,
+      "direction": "inbound",
+      "subject": "Re: MSPサービス提案 — AWSからのサポート",
+      "body": "真鍋様\n\n吉田です。MSP提案を社内で共有したところ、\n非常に前向きな反応をいただいています。\n\nAWS側からのサポートとして以下を提供できます：\n- パートナー登録の優先審査\n- AWS Competency取得のメンタリング\n- クライアント向けAWSクレジット（1社あたり$1,000）\n- AWS共催セミナーの開催支援\n\nパートナー契約の詳細について詰めましょう。\n弊社の標準的なパートナー契約書を共有しますが、\n真鍋様側でも条件のご希望があればお聞かせください。",
+      "stage": "negotiation",
+      "apis_used": [
+        {"api": "NegotiationEngine.analyze_offer()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.03}
+      ]
+    },
+    {
+      "round": 8,
+      "direction": "outbound",
+      "subject": "Re: パートナー契約の条件",
+      "body": "吉田様\n\nサポート内容ありがとうございます。\nクライアント向けクレジットや共催セミナーは非常にありがたいです。\n\n弊社側の希望条件：\n- パートナーティア: セレクトパートナーからスタート\n- AWS側からの案件紹介: 月1件以上を希望\n- 共催セミナー: 四半期1回\n- 技術サポート: 優先チャネルでのSA（ソリューションアーキテクト）アクセス\n\nパートナー契約書を拝見した上で、\n弊社法務にも確認いたします。\n\n来月からのサービス開始を目指したいです。",
+      "stage": "negotiation",
+      "apis_used": [
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.05}
+      ]
+    },
+    {
+      "round": 9,
+      "direction": "inbound",
+      "subject": "Re: パートナー契約 — 合意",
+      "body": "真鍋様\n\nご希望の条件、すべて対応可能です。\nパートナー契約書をお送りしますので、ご署名をお願いいたします。\n\nまた、早速ですが1件ご紹介したい案件があります。\n中堅メーカー様でAI品質検査をAWS上で構築したいというご相談です。\n予算は年間¥600万程度。ご興味ありましたらお繋ぎします。\n\nクレジット$5,000も本日中にアカウントに反映いたします。",
+      "stage": "contract",
+      "apis_used": [
+        {"api": "ConversationStateMachine.advance()", "type": "local", "description": "negotiation → contract → implementation"}
+      ]
+    },
+    {
+      "round": 10,
+      "direction": "outbound",
+      "subject": "Re: パートナー契約署名 + 案件紹介の件",
+      "body": "吉田様、松岡様\n\nパートナー契約書に署名いたしました。\nクレジットの反映もありがとうございます。\n\n中堅メーカー様のAI品質検査案件、ぜひご紹介ください。\n弊社の得意分野です。\n\n弊社の既存クライアント3社への\nMSPサービス提供も来月から開始しますので、\n初月の稼働レポートを翌月初にお送りいたします。\n\n素晴らしいパートナーシップの始まりですね。\n引き続きよろしくお願いいたします。",
+      "stage": "billing",
+      "apis_used": [
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.05},
+        {"api": "DashboardSync.sync_all()", "type": "httpx", "cost": 0}
+      ]
+    }
+  ],
+  "api_summary": {
+    "total_api_calls": 12,
+    "openai_calls": 8,
+    "total_cost_usd": 0.36,
+    "total_cost_jpy": 54
+  },
+  "implementation_details": {
+    "new_features_required": [
+      {"name": "VendorPartnerDetector", "description": "クラウドベンダー（AWS/GCP/Azure）の営業を検出し、パートナープログラムへの転換を自動提案", "location": "src/mirror/parser/email_parser.py"}
+    ],
+    "key_insight": "クラウドベンダーの営業は「使ってもらう」が目的。パートナーになることで「使わせる側」に回り、月額継続収入+案件紹介を得る。クレジットも獲得して一石三鳥。"
+  }
+}

@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EP-08 — AWS営業 → AI基盤MSPパートナー契約で月額50万の継続収入</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --black: #0a0a0a;
+  --white: #f5f5f0;
+  --gray-1: #1a1a1a;
+  --gray-2: #2a2a2a;
+  --gray-3: #4a4a4a;
+  --gray-4: #7a7a7a;
+  --gray-5: #aaaaaa;
+  --accent: #ff3333;
+  --green: #00cc66;
+  --blue: #4488ff;
+  --grid: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  background: var(--black);
+  color: var(--white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 900px; margin: 0 auto; padding: 0 calc(var(--grid) * 4); }
+
+.back {
+  display: inline-block;
+  padding: calc(var(--grid) * 4) 0;
+  color: var(--gray-4);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+.back:hover { color: var(--white); }
+
+.ep-header {
+  padding: calc(var(--grid) * 6) 0;
+  border-bottom: 1px solid var(--gray-2);
+}
+
+.ep-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--gray-4);
+  letter-spacing: 2px;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.ep-title {
+  font-size: clamp(24px, 4vw, 42px);
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1.2;
+  margin-bottom: calc(var(--grid) * 3);
+}
+
+.ep-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border-radius: 2px;
+  margin-bottom: calc(var(--grid) * 3);
+}
+.badge-success { background: rgba(0,204,102,0.15); color: var(--green); border: 1px solid rgba(0,204,102,0.3); }
+.badge-failure { background: rgba(255,51,51,0.15); color: var(--accent); border: 1px solid rgba(255,51,51,0.3); }
+.badge-warning { background: rgba(255,200,50,0.15); color: #ffc832; border: 1px solid rgba(255,200,50,0.3); }
+
+.ep-summary {
+  font-size: 15px;
+  color: var(--gray-5);
+  line-height: 1.7;
+  margin-bottom: calc(var(--grid) * 4);
+}
+
+.ep-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px;
+  background: var(--gray-2);
+  border: 1px solid var(--gray-2);
+  margin-bottom: calc(var(--grid) * 8);
+}
+
+.ep-stat {
+  background: var(--black);
+  padding: calc(var(--grid) * 3);
+  text-align: center;
+}
+
+.ep-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+.ep-stat-value.green { color: var(--green); }
+.ep-stat-value.red { color: var(--accent); }
+
+.ep-stat-label {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gray-4);
+  margin-top: 4px;
+}
+
+/* Exchange */
+.exchange {
+  padding: calc(var(--grid) * 4) 0;
+  border-bottom: 1px solid var(--gray-2);
+}
+
+.exchange-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.exchange-round {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+}
+.round-in { color: var(--blue); }
+.round-out { color: var(--green); }
+.round-sys { color: var(--accent); }
+
+.exchange-stage {
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--gray-4);
+  background: var(--gray-1);
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+
+.exchange-from {
+  font-size: 12px;
+  color: var(--gray-5);
+  margin-bottom: 4px;
+}
+
+.exchange-subject {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.exchange-body {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--gray-6);
+  white-space: pre-wrap;
+  padding: calc(var(--grid) * 3);
+  background: var(--gray-1);
+  border-left: 3px solid var(--gray-3);
+  border-radius: 0 4px 4px 0;
+  margin-bottom: calc(var(--grid) * 2);
+}
+
+.exchange-body.inbound { border-left-color: var(--blue); }
+.exchange-body.outbound { border-left-color: var(--green); }
+.exchange-body.system { border-left-color: var(--accent); }
+
+.exchange-apis {
+  margin-top: calc(var(--grid) * 2);
+}
+
+.api-call {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--gray-4);
+  padding: 4px 0;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.api-name { color: var(--gray-5); }
+.api-cost { color: var(--accent); font-size: 10px; }
+.api-desc { color: var(--gray-3); font-size: 10px; }
+
+/* Post-mortem */
+.postmortem {
+  padding: calc(var(--grid) * 6) 0;
+  border-top: 2px solid var(--accent);
+  margin-top: calc(var(--grid) * 4);
+}
+
+.postmortem h3 {
+  font-size: 16px;
+  color: var(--accent);
+  margin-bottom: calc(var(--grid) * 3);
+  letter-spacing: 1px;
+}
+
+.postmortem ul {
+  list-style: none;
+  padding: 0;
+}
+
+.postmortem li {
+  font-size: 13px;
+  color: var(--gray-5);
+  padding: 6px 0;
+  padding-left: 16px;
+  position: relative;
+}
+
+.postmortem li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--gray-3);
+}
+
+.footer {
+  padding: calc(var(--grid) * 6) 0;
+  text-align: center;
+  color: var(--gray-3);
+  font-size: 11px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="back" href="index.html">← ALL EPISODES</a>
+
+  <div class="ep-header">
+    <div class="ep-id">EP-08</div>
+    <div class="ep-badge badge-success">SUCCESS</div>
+    <h1 class="ep-title">AWS営業 → AI基盤MSPパートナー契約で月額50万の継続収入</h1>
+    <p class="ep-summary">AWSの「$5,000クレジット進呈」営業に対し、クレジットは受け取りつつ、AWS上でのAI基盤構築のマネージドサービス（MSP）パートナー契約を逆提案。月額50万円の継続収入を確立。</p>
+  </div>
+
+  <div class="ep-stats">
+    <div class="ep-stat">
+      <div class="ep-stat-value">10</div>
+      <div class="ep-stat-label">Rounds</div>
+    </div>
+    <div class="ep-stat">
+      <div class="ep-stat-value">22d</div>
+      <div class="ep-stat-label">Duration</div>
+    </div>
+    <div class="ep-stat">
+      <div class="ep-stat-value green">¥6.0M</div>
+      <div class="ep-stat-label">Revenue</div>
+    </div>
+    <div class="ep-stat">
+      <div class="ep-stat-value">¥54</div>
+      <div class="ep-stat-label">API Cost</div>
+    </div>
+  </div>
+
+  
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R1 ← INBOUND</span>
+        <span class="exchange-stage">initial_response</span>
+      </div>
+      <div class='exchange-from'>松岡 恵理 &lt;matsuoka@aws-partner-example.co.jp&gt;</div>
+      <div class="exchange-subject">【AWS】AI/MLワークロード向け特別クレジットのご案内</div>
+      <div class="exchange-body inbound">真鍋様
+
+Amazon Web Services パートナーソリューション部の松岡です。
+
+貴社のAI開発事業について、AWSの活用状況を伺いたくご連絡しました。
+
+現在、AI/ML分野で成長中の企業様向けに
+AWSクレジット$5,000（約¥75万円分）を進呈するプログラムを
+実施しております。
+
+対象サービス:
+- Amazon SageMaker
+- Amazon Bedrock
+- Amazon Q
+- その他AI/MLサービス全般
+
+15分のヒアリングにご協力いただけますと、
+貴社に最適なAWS活用プランもご提案いたします。
+
+まずはオンラインでお話しさせていただけませんか。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">EmailParser.is_sales_email()</span></div>
+<div class="api-call"><span class="api-name">EmailParser.extract()</span> <span class="api-cost">$0.03</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R2 → OUTBOUND</span>
+        <span class="exchange-stage">initial_response</span>
+      </div>
+      
+      <div class="exchange-subject">Re: 【AWS】AI/MLワークロード向けクレジット</div>
+      <div class="exchange-body outbound">松岡様
+
+お世話になっております。株式会社mmmmmの真鍋です。
+
+AWSクレジットのご案内ありがとうございます。
+弊社は現在AWS上でAI基盤を構築しておりまして、
+SageMakerとBedrockは日常的に使用しています。
+
+クレジットは大変ありがたいです。ぜひ申請させてください。
+
+いくつか伺いたい点があります：
+1. クレジットの利用期限と対象サービスの制限
+2. AWSパートナープログラム（テクノロジーパートナー）への参加要件
+3. 弊社のようなAI開発企業がMSPパートナーになる道筋
+
+実は弊社のクライアント企業にもAWS上でのAI基盤構築を
+提案する機会が増えておりまして、パートナーとして
+活動できると双方にメリットがあるのではと考えています。
+
+お打ち合わせ、ぜひお願いいたします。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span> <span class="api-desc">// クレジットを受けつつ、パートナープログラムへの関心を示す</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R3 ← INBOUND</span>
+        <span class="exchange-stage">meeting_setup</span>
+      </div>
+      
+      <div class="exchange-subject">Re: AWSパートナープログラムについて</div>
+      <div class="exchange-body inbound">真鍋様
+
+ご回答です：
+1. クレジット: 6ヶ月有効、AI/MLサービス全般で利用可能
+2. テクノロジーパートナー: AWS上でのソリューション実績があれば申請可能
+3. MSPパートナー: 運用管理の実績が必要ですが、段階的に取得可能です
+
+パートナーへのご関心、大変嬉しいです。
+弊社のパートナー担当の吉田も交えてお話しできればと思います。
+
+来週のご都合はいかがでしょうか。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">MeetingScheduler.generate_proposals()</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R4 → OUTBOUND</span>
+        <span class="exchange-stage">meeting_setup</span>
+      </div>
+      
+      <div class="exchange-subject">Re: AWSパートナープログラム — 打合せ候補</div>
+      <div class="exchange-body outbound">松岡様
+
+吉田様にもご同席いただけるとのこと、ありがとうございます。
+
+候補日：
+- 5月19日（月）14:00〜15:00
+- 5月21日（水）10:00〜11:00
+
+打合せでは以下を議論したいです：
+1. テクノロジーパートナー登録の具体的なステップ
+2. 弊社クライアント向けのAWS基盤構築サービスの設計
+3. AWS Marketplaceへのソリューション掲載の可能性
+
+弊社のAWS利用実績と主要プロジェクトの概要を
+事前にお送りいたします。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R5 ← INBOUND</span>
+        <span class="exchange-stage">proposal</span>
+      </div>
+      
+      <div class="exchange-subject">Re: 打合せ確定</div>
+      <div class="exchange-body inbound">真鍋様
+
+5月21日（水）10:00〜で確定です。
+
+打合せの結果、テクノロジーパートナー登録は
+スムーズに進められそうです。
+弊社からもサポートいたします。
+
+また、真鍋様のクライアント向けAI基盤構築ですが、
+AWS側で「AI Competency」という認定があり、
+取得されると弊社からの案件紹介も可能になります。
+
+打合せ楽しみにしております。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">MeetingScheduler.extract_dates()</span> <span class="api-cost">$0.03</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R6 → OUTBOUND</span>
+        <span class="exchange-stage">proposal</span>
+      </div>
+      
+      <div class="exchange-subject">Re: 打合せ後 — MSPサービス提案</div>
+      <div class="exchange-body outbound">松岡様、吉田様
+
+打合せありがとうございました。
+テクノロジーパートナー登録を進めたいと思います。
+
+さて、打合せで議論した内容を整理しました：
+
+【提案: AI基盤マネージドサービス（MSP）】
+弊社がAWSパートナーとして、中堅企業向けに
+AI基盤の構築・運用をマネージドサービスとして提供します。
+
+サービス内容:
+- AWS環境のAI基盤設計・構築
+- SageMaker/Bedrockの初期設定・最適化
+- 月次の運用監視・コスト最適化
+- AIモデルの定期チューニング
+
+価格: 月額¥500,000/社（年間契約）
+
+弊社が直接クライアントと契約し、
+AWS利用料は別途クライアント負担。
+弊社のMSP売上の一部がAWS側のパートナー実績にもなります。
+
+まず弊社の既存クライアント3社で開始し、
+6ヶ月で10社への拡大を目指します。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.07</span> <span class="api-desc">// MSPサービス提案の生成。AWSパートナー経済圏を活用したビジネスモデル</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R7 ← INBOUND</span>
+        <span class="exchange-stage">negotiation</span>
+      </div>
+      
+      <div class="exchange-subject">Re: MSPサービス提案 — AWSからのサポート</div>
+      <div class="exchange-body inbound">真鍋様
+
+吉田です。MSP提案を社内で共有したところ、
+非常に前向きな反応をいただいています。
+
+AWS側からのサポートとして以下を提供できます：
+- パートナー登録の優先審査
+- AWS Competency取得のメンタリング
+- クライアント向けAWSクレジット（1社あたり$1,000）
+- AWS共催セミナーの開催支援
+
+パートナー契約の詳細について詰めましょう。
+弊社の標準的なパートナー契約書を共有しますが、
+真鍋様側でも条件のご希望があればお聞かせください。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">NegotiationEngine.analyze_offer()</span> <span class="api-cost">$0.03</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R8 → OUTBOUND</span>
+        <span class="exchange-stage">negotiation</span>
+      </div>
+      
+      <div class="exchange-subject">Re: パートナー契約の条件</div>
+      <div class="exchange-body outbound">吉田様
+
+サポート内容ありがとうございます。
+クライアント向けクレジットや共催セミナーは非常にありがたいです。
+
+弊社側の希望条件：
+- パートナーティア: セレクトパートナーからスタート
+- AWS側からの案件紹介: 月1件以上を希望
+- 共催セミナー: 四半期1回
+- 技術サポート: 優先チャネルでのSA（ソリューションアーキテクト）アクセス
+
+パートナー契約書を拝見した上で、
+弊社法務にも確認いたします。
+
+来月からのサービス開始を目指したいです。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-in">R9 ← INBOUND</span>
+        <span class="exchange-stage">contract</span>
+      </div>
+      
+      <div class="exchange-subject">Re: パートナー契約 — 合意</div>
+      <div class="exchange-body inbound">真鍋様
+
+ご希望の条件、すべて対応可能です。
+パートナー契約書をお送りしますので、ご署名をお願いいたします。
+
+また、早速ですが1件ご紹介したい案件があります。
+中堅メーカー様でAI品質検査をAWS上で構築したいというご相談です。
+予算は年間¥600万程度。ご興味ありましたらお繋ぎします。
+
+クレジット$5,000も本日中にアカウントに反映いたします。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">ConversationStateMachine.advance()</span> <span class="api-desc">// negotiation → contract → implementation</span></div>
+</div>
+    </div>
+    
+    <div class="exchange">
+      <div class="exchange-header">
+        <span class="exchange-round round-out">R10 → OUTBOUND</span>
+        <span class="exchange-stage">billing</span>
+      </div>
+      
+      <div class="exchange-subject">Re: パートナー契約署名 + 案件紹介の件</div>
+      <div class="exchange-body outbound">吉田様、松岡様
+
+パートナー契約書に署名いたしました。
+クレジットの反映もありがとうございます。
+
+中堅メーカー様のAI品質検査案件、ぜひご紹介ください。
+弊社の得意分野です。
+
+弊社の既存クライアント3社への
+MSPサービス提供も来月から開始しますので、
+初月の稼働レポートを翌月初にお送りいたします。
+
+素晴らしいパートナーシップの始まりですね。
+引き続きよろしくお願いいたします。</div>
+      <div class='exchange-apis'><div class="api-call"><span class="api-name">LlmClient.generate_response()</span> <span class="api-cost">$0.05</span></div>
+<div class="api-call"><span class="api-name">DashboardSync.sync_all()</span></div>
+</div>
+    </div>
+    
+
+  
+
+  <div class="footer">SALES MIRROR BOT — 営業ボットには、営業ボットを。</div>
+</div>
+</body>
+</html>
