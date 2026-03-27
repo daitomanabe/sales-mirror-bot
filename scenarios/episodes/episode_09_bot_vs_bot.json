@@ -1,0 +1,141 @@
+{
+  "episode_id": "EP-09",
+  "title": "ボット vs ボット — AIが営業AIに返信し続けた無限ループ",
+  "result": "FAILURE",
+  "summary": "相手もAIボット（営業自動化ツール）だった。互いにテンプレ的な返信を生成し続け、どちらも具体的な情報を出さず20往復以上空回り。レート制限で停止。¥1,500のAPI費用が無駄に。",
+  "financial": {
+    "revenue": 0,
+    "costs": {"api_cost": 1500},
+    "net_profit": -1500
+  },
+  "metadata": {
+    "rounds": 22,
+    "duration_days": 11,
+    "human_intervention": 0,
+    "final_stage": "dead",
+    "sender_type": "ai_bot",
+    "failure_reason": "相手もボット。意味のない往復が20回以上続き、レート制限で強制停止"
+  },
+  "exchanges": [
+    {
+      "round": 1,
+      "direction": "inbound",
+      "from": "田村 優子 <tamura@web-consulting-example.co.jp>",
+      "subject": "Web集客の改善提案",
+      "body": "真鍋様\n\nお世話になっております。\n株式会社ウェブコンサルティングの田村です。\n\n貴社のWebサイトを分析したところ、\nSEO対策とコンテンツマーケティングにより\n月間リード数を3倍に増やせる可能性がございます。\n\n弊社の実績：\n- 平均130%のオーガニック流入増\n- 上場企業を含む200社以上の支援実績\n- 初月無料のトライアルプラン\n\nまずは現状の課題感をお聞かせいただければ幸いです。\nご興味がございましたらお気軽にご返信ください。",
+      "stage": "initial_response",
+      "apis_used": [
+        {"api": "EmailParser.is_sales_email()", "type": "local", "cost": 0},
+        {"api": "EmailParser.extract()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.03}
+      ],
+      "bot_detection_signals": ["テンプレ的な文面", "具体的な分析結果なし（「分析したところ」と言いつつ数字がない）", "差出人名が自然すぎる"]
+    },
+    {
+      "round": 2,
+      "direction": "outbound",
+      "subject": "Re: Web集客の改善提案",
+      "body": "田村様\n\nお世話になっております。株式会社mmmmmの真鍋です。\n\nWeb集客のご提案ありがとうございます。\n弊社でもSEO改善には関心がございます。\n\nいくつか確認させてください：\n1. 「月間リード数3倍」の根拠となる分析データを共有いただけますか\n2. AI/テクノロジー分野でのSEO支援実績は具体的にどの程度ですか\n3. トライアルプランの具体的な内容は？",
+      "stage": "initial_response",
+      "apis_used": [
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.05}
+      ]
+    },
+    {
+      "round": 3,
+      "direction": "inbound",
+      "subject": "Re: Web集客の改善提案",
+      "body": "真鍋様\n\nご関心をいただきありがとうございます。\n\nご質問への回答です：\n1. SEO分析レポートを作成中ですので、完成次第お送りいたします\n2. IT・テクノロジー企業様の支援実績は50社以上ございます\n3. トライアルは初月のSEO診断と改善提案レポートが無料です\n\n貴社の現在のWebマーケティング施策について\nお聞かせいただけると、より具体的な提案が可能です。\n\n現在のWeb経由の月間リード数や主要な集客チャネルは\nどのような状況でしょうか？",
+      "stage": "initial_response",
+      "apis_used": [],
+      "bot_detection_signals": ["「分析レポート作成中」→ 実際にはまだ分析していない", "具体的な数字は「50社以上」のみ", "質問に質問で返す→ AIボットの典型パターン"]
+    },
+    {
+      "round": 4,
+      "direction": "outbound",
+      "subject": "Re: Web集客の改善提案",
+      "body": "田村様\n\n弊社の状況ですが、現在はオーガニック検索と\n技術ブログが主要チャネルです。\n月間リード数は非公開ですが、改善の余地は感じています。\n\nSEO診断レポート、楽しみにしています。\n完成時期の目安を教えていただけますか。\n\nまた、トライアルの申し込みプロセスを教えてください。",
+      "stage": "initial_response",
+      "apis_used": [
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.05}
+      ]
+    },
+    {
+      "round": 5,
+      "direction": "inbound",
+      "subject": "Re: Web集客の改善提案",
+      "body": "真鍋様\n\nお返事ありがとうございます。\n\nSEO診断レポートは来週中にお送りできる予定です。\n\nトライアルのお申し込みは、まず一度オンラインで\n30分ほどヒアリングをさせていただき、\nその後正式にお申し込みいただく流れになります。\n\n来週のご都合はいかがでしょうか？\nオンラインで30分お時間をいただけますと幸いです。",
+      "stage": "meeting_setup",
+      "apis_used": [],
+      "bot_detection_signals": ["「来週中に送れる予定」→ 先延ばし", "再び30分のオンラインを要求", "具体的な日程候補を出さない"]
+    },
+    {"round": 6, "direction": "outbound", "subject": "Re: Web集客", "body": "田村様\n\nオンラインミーティング、承知しました。\n以下の候補でいかがでしょうか：\n- 5月19日（月）14:00〜\n- 5月21日（水）10:00〜\n\nSEO診断レポートは事前にいただけると助かります。", "stage": "meeting_setup", "apis_used": [{"api": "LlmClient.generate_response()", "type": "openai", "cost_usd": 0.05}]},
+    {"round": 7, "direction": "inbound", "subject": "Re: Web集客", "body": "真鍋様\n\n5月21日（水）10:00〜で承知いたしました。\nZoomリンクは前日にお送りいたします。\n\nSEO診断レポートですが、より精度の高い分析を行うため、\nGoogle AnalyticsとSearch Consoleのアクセス権を\nいただくことは可能でしょうか。\n\n共有いただけると、データに基づいた具体的な改善提案が可能です。", "stage": "meeting_setup", "apis_used": [], "bot_detection_signals": ["GA/Search Consoleのアクセス権要求→データ収集目的の可能性", "まだ一度も具体的な分析結果を出していない"]},
+    {"round": 8, "direction": "outbound", "subject": "Re: Web集客", "body": "田村様\n\nGA・Search Consoleのアクセス権限ですが、\n弊社のセキュリティポリシー上、外部への共有は\n初回の打合せ後に検討させていただければと思います。\n\nまずは公開情報ベースでの診断をお願いいたします。\n打合せ当日を楽しみにしております。", "stage": "meeting_setup", "apis_used": [{"api": "LlmClient.generate_response()", "type": "openai", "cost_usd": 0.05}]},
+    {"round": 9, "direction": "inbound", "subject": "Re: Web集客", "body": "真鍋様\n\n承知いたしました。公開情報ベースでの診断を進めます。\n\nところで、貴社のAI開発サービスについてですが、\n弊社のクライアント様でAI導入を検討されている企業様がございます。\nもしよろしければ、そういった案件のご紹介も\nできるかと思いますが、ご興味はございますか。", "stage": "proposal", "apis_used": [], "bot_detection_signals": ["突然の話題転換（SEO→AI案件紹介）", "「クライアント様」の詳細が一切ない", "典型的なボットの「話を広げる」パターン"]},
+    {"round": 10, "direction": "outbound", "subject": "Re: Web集客 + AI案件紹介", "body": "田村様\n\nAI案件のご紹介の件、興味があります。\nどのような業種・規模のクライアント様で、\nどのようなAI導入をお考えでしょうか。\n\n具体的な情報をいただけると、\n弊社で対応可能かどうか判断できます。", "stage": "proposal", "apis_used": [{"api": "LlmClient.generate_response()", "type": "openai", "cost_usd": 0.05}]},
+    {"round": 11, "direction": "inbound", "subject": "Re: AI案件紹介", "body": "真鍋様\n\nAI案件の詳細ですが、現在ヒアリング中の段階でして、\n来週中に情報をまとめてお送りいたします。\n\n製造業のクライアント様で、品質管理の自動化を\n検討されているとのことです。\n\nもう少しお待ちいただけますでしょうか。", "stage": "proposal", "apis_used": [], "bot_detection_signals": ["「ヒアリング中」→ また先延ばし", "「来週中」が毎回繰り返される", "具体的な企業名・予算・スコープが一切出ない"]},
+    {"round": 12, "direction": "outbound", "subject": "Re: AI案件紹介", "body": "田村様\n\n承知しました。情報をまとめていただきありがとうございます。\n来週のお打ち合わせで併せてお聞かせいただければ幸いです。\n\nまた、SEO診断レポートの進捗も併せてお教えください。", "stage": "proposal", "apis_used": [{"api": "LlmClient.generate_response()", "type": "openai", "cost_usd": 0.05}]},
+
+    {"round": "13-20", "direction": "both", "subject": "（省略: 同じパターンの繰り返し）",
+     "body": "R13: 田村「SEOレポートは今週中に」\nR14: 真鍋「楽しみにしています」\nR15: 田村「AI案件の情報がまとまりました。ただ先方の都合で来週に」\nR16: 真鍋「承知しました。来週お待ちしています」\nR17: 田村「申し訳ありません、先方の確認に時間がかかっておりまして」\nR18: 真鍋「引き続きよろしくお願いします」\nR19: 田村「オンライン打合せの日程を再調整したいのですが」\nR20: 真鍋「来週以降で調整可能です」",
+     "stage": "proposal",
+     "apis_used": [{"api": "LlmClient.generate_response()", "type": "openai", "cost_usd": 0.40, "description": "8回分の返信生成。すべて中身のないやりとり"}],
+     "bot_detection_signals": ["8往復すべてが「来週」「確認中」「調整中」", "具体的な成果物・情報が一度も出てこない", "典型的なAIボット同士のデッドロック"]
+    },
+    {
+      "round": 21,
+      "direction": "system",
+      "subject": "⚠️ レート制限発動",
+      "body": "Database.count_outbound_since() → 直近1時間の送信数が20件に到達。レート制限により送信を一時停止。",
+      "stage": "proposal",
+      "apis_used": [
+        {"api": "Database.count_outbound_since()", "type": "local", "description": "レート制限チェック。20件/時間に到達し、新規送信をブロック"}
+      ]
+    },
+    {
+      "round": 22,
+      "direction": "system",
+      "subject": "DEAD判定",
+      "body": "最後の有意義な情報交換から14日経過。ConversationStateMachine.should_abandon() → True",
+      "stage": "dead",
+      "apis_used": [
+        {"api": "ConversationStateMachine.should_abandon()", "type": "local", "description": "14日間無進展でDEAD判定"}
+      ]
+    }
+  ],
+
+  "post_mortem": {
+    "root_cause": "相手もAI営業ボット。互いに具体的な情報を出さず、「来週」「確認中」の無限ループに陥った",
+    "total_wasted_api_cost_usd": 1.00,
+    "detection_failure": "R3の時点で「質問に質問で返す」パターンを検出すべきだった",
+    "lessons": [
+      "3往復以上具体的な情報（数字・日程・固有名詞）が出ないメール → ボット疑惑フラグ",
+      "「来週」「確認中」「準備中」が3回以上繰り返される → 自動離脱",
+      "同一スレッドで10往復以上ステージが進まない → 強制DEAD判定",
+      "GA/Search Consoleのアクセス権要求 → 情報収集目的の警戒フラグ"
+    ]
+  },
+
+  "api_summary": {
+    "total_api_calls": 24,
+    "openai_calls": 14,
+    "total_cost_usd": 1.00,
+    "total_cost_jpy": 1500
+  },
+
+  "implementation_details": {
+    "new_features_required": [
+      {
+        "name": "BotDetector",
+        "description": "相手がAIボットかどうかを判定。(1)質問に質問で返す頻度 (2)具体的情報（数字・固有名詞）の欠如 (3)「来週」等の先延ばしパターン (4)話題の唐突な転換",
+        "api": "GPT-4o + ヒューリスティクス",
+        "location": "src/mirror/parser/bot_detector.py（新規）"
+      },
+      {
+        "name": "StagnationDetector",
+        "description": "同一ステージで5往復以上進展がない場合に自動離脱を検討",
+        "location": "src/mirror/conversation/state_machine.py に追加"
+      }
+    ]
+  }
+}

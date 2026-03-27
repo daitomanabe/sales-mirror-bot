@@ -1,0 +1,163 @@
+{
+  "episode_id": "EP-14",
+  "title": "補助金コンサルタント → AI開発案件に補助金を組み合わせるパートナー契約",
+  "result": "SUCCESS",
+  "summary": "IT導入補助金の申請サポート営業に対し、「弊社クライアント向けに補助金を組み込んだAI開発パッケージを共同販売しよう」と逆提案。補助金で企業負担を1/3に下げ、受注率を大幅向上。",
+  "financial": {
+    "revenue_per_deal": 500000,
+    "expected_deals_annual": 10,
+    "revenue_annual": 5000000,
+    "costs": {"api_cost": 120},
+    "net_profit_annual": 4999880,
+    "additional_benefit": "弊社AI開発案件の受注率が2倍に向上（補助金で企業負担が1/3になるため）"
+  },
+  "metadata": {
+    "rounds": 12,
+    "duration_days": 30,
+    "human_intervention": 0,
+    "final_stage": "billing",
+    "sender_type": "subsidy_consultant"
+  },
+  "exchanges": [
+    {
+      "round": 1,
+      "direction": "inbound",
+      "from": "高田 修平 <takada@subsidy-pro-example.co.jp>",
+      "subject": "IT導入補助金の活用で開発費用を最大2/3削減",
+      "body": "真鍋様\n\nお世話になっております。\n補助金サポートプロ株式会社の高田です。\n\n2025年度のIT導入補助金の公募が始まりました。\nAI開発企業様の場合、以下のようなメリットがあります：\n\n- 補助率: 最大2/3（開発費用の2/3が補助金で戻る）\n- 補助上限: 450万円（通常枠）/ 3,000万円（デジタル化基盤導入枠）\n- 対象: AI開発、クラウドサービス導入、DX推進等\n\n弊社は補助金申請の専門家として、\n採択率95%以上の実績がございます。\n申請代行手数料は採択額の10〜15%です。\n\n貴社の開発費用の負担軽減にお役立ていただけると思います。\nまずは15分ほど、補助金の活用方法をご説明させてください。",
+      "stage": "initial_response",
+      "apis_used": [
+        {"api": "EmailParser.is_sales_email()", "type": "local", "cost": 0, "keywords_matched": ["ご案内", "ご紹介", "費用対効果", "導入実績"]},
+        {"api": "EmailParser.extract()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.03, "output": {"company_name": "補助金サポートプロ", "service_type": "IT導入補助金申請代行", "budget_low": null, "platform": ""}}
+      ]
+    },
+    {
+      "round": 2,
+      "direction": "outbound",
+      "subject": "Re: IT導入補助金の活用 — 別の角度からのご提案",
+      "body": "高田様\n\nお世話になっております。株式会社mmmmmの真鍋です。\n\n補助金のご案内ありがとうございます。\n弊社はAI開発の「提供側」ですので、自社の開発費用に\n補助金を使うというよりも、別のアイデアがあります。\n\n弊社のクライアント企業（AI開発を発注する側）が、\n補助金を活用して弊社への発注費用を軽減できれば、\n受注のハードルが大幅に下がります。\n\n例えば：\n弊社のAI開発案件 ¥450万 → 補助金で企業負担 ¥150万\n\nこの「補助金込みAI開発パッケージ」を\n高田様と共同で提案できないかと考えています。\n\n具体的には：\n1. 弊社がAI開発の見積もりを作成\n2. 高田様が補助金申請書類を作成・代行\n3. クライアント企業は実質1/3の負担でAI開発を導入\n4. 手数料は採択額の10%を高田様に（弊社負担 or クライアント負担）\n\nいかがでしょうか。一度お話しさせてください。",
+      "stage": "initial_response",
+      "apis_used": [
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.07, "description": "補助金を「自社コスト削減」ではなく「クライアントの受注促進ツール」として再定義する逆提案"}
+      ]
+    },
+    {
+      "round": 3,
+      "direction": "inbound",
+      "subject": "Re: 補助金 × AI開発 — 素晴らしいアイデア",
+      "body": "真鍋様\n\nこれは素晴らしいアイデアですね！\n実は弊社でも、IT企業様と組んで「補助金込みパッケージ」を\n共同販売するスキームは以前から構想していました。\n\nAI開発は補助金の採択率が高い分野ですし、\n「AI導入に興味はあるが予算がない」という企業様は非常に多いです。\n\n弊社の強み：\n- 補助金採択率95%\n- 申請書作成のテンプレートとノウハウ\n- 補助金事務局との関係性\n\nぜひ具体的な協業スキームを詰めましょう。\n来週お打ち合わせは可能でしょうか。",
+      "stage": "meeting_setup",
+      "apis_used": [
+        {"api": "ConversationStateMachine.advance()", "type": "local", "description": "initial_response → meeting_setup"}
+      ]
+    },
+    {
+      "round": 4,
+      "direction": "outbound",
+      "subject": "Re: 補助金 × AI開発 — 打合せ候補",
+      "body": "高田様\n\nご共感いただきありがとうございます。\n\n来週の候補です：\n- 5月26日（月）14:00〜15:00\n- 5月28日（水）10:00〜11:00\n\n打合せに向けて、以下を準備します：\n1. 弊社のAI開発メニュー（補助金対応版）\n2. 想定するクライアント企業のペルソナ\n3. 価格設計案（補助金込み）\n\n高田様からは以下をお教えいただけると助かります：\n- 2025年度の主要な補助金スケジュール\n- AI開発案件での採択実績\n- 申請から採択までのリードタイム",
+      "stage": "meeting_setup",
+      "apis_used": [
+        {"api": "MeetingScheduler.generate_proposals()", "type": "local", "cost": 0},
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.05}
+      ]
+    },
+    {
+      "round": 5,
+      "direction": "inbound",
+      "subject": "Re: 打合せ確定 + 補助金スケジュール",
+      "body": "真鍋様\n\n5月28日（水）10:00〜で確定です。\n\n補助金スケジュール：\n- IT導入補助金: 公募中〜6月末締切（通常枠）\n- ものづくり補助金: 次回公募7月予定（上限1,250万円）\n- 事業再構築補助金: 次回8月（AI活用は採択率高い）\n\nAI開発での採択実績は直近1年で12件、採択率92%です。\n申請→採択: 約2〜3ヶ月\n\n打合せ楽しみにしています。",
+      "stage": "proposal",
+      "apis_used": [
+        {"api": "MeetingScheduler.extract_dates()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.03}
+      ]
+    },
+    {
+      "round": 6,
+      "direction": "outbound",
+      "subject": "Re: 打合せまとめ — パートナーシップ提案",
+      "body": "高田様\n\n打合せありがとうございました。\n議論した内容を整理し、パートナーシップ案を提示します。\n\n【補助金×AI開発 共同販売パートナーシップ】\n\n■ スキーム\n1. 弊社がAI開発案件を受注（見積もり作成）\n2. 高田様が補助金申請を代行（書類作成・提出）\n3. クライアントは実質1/3〜1/2の負担でAI開発を導入\n\n■ 価格例\n弊社AI開発: ¥450万 → 補助金¥300万 → 企業負担¥150万\n高田様手数料: ¥300万 × 10% = ¥30万（弊社から支払い）\n弊社純売上: ¥450万 - ¥30万 = ¥420万\n\n■ 紹介の流れ\n- 弊社クライアントに補助金活用を提案 → 高田様に申請依頼\n- 高田様の顧客にAI開発ニーズがあれば → 弊社に紹介\n\n■ 手数料\n- 弊社→高田様: 補助金採択額の10%\n- 高田様→弊社: AI開発紹介の場合は契約額の10%\n\n年間10件の共同案件を目標にしましょう。",
+      "stage": "proposal",
+      "apis_used": [
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.07, "description": "パートナーシップ提案の生成。補助金スキームの数字を活用した具体的な価格設計"}
+      ]
+    },
+    {
+      "round": 7,
+      "direction": "inbound",
+      "subject": "Re: パートナーシップ — 条件交渉",
+      "body": "真鍋様\n\nスキーム、非常に分かりやすいです。\n\n1点交渉ですが、手数料率を以下に調整できませんか：\n- 弊社への手数料: 採択額の12%（10%→12%）\n  理由: 申請書作成の工数が大きいため\n\nまた、弊社からAI開発紹介時の手数料は\n7%に下げていただけると、より多く紹介しやすいです。\n\n年間10件の目標は達成可能と考えています。\n弊社の顧客基盤だけでも5件は見込めます。",
+      "stage": "negotiation",
+      "apis_used": [
+        {"api": "NegotiationEngine.analyze_offer()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.03}
+      ]
+    },
+    {
+      "round": 8,
+      "direction": "outbound",
+      "subject": "Re: パートナーシップ — 条件合意",
+      "body": "高田様\n\n承知しました。以下で合意いたしましょう：\n\n- 弊社→高田様: 採択額の12%\n- 高田様→弊社: AI開発紹介は契約額の8%（7%と10%の間を取りました）\n\n弊社としては、補助金を組み合わせることで\n受注率が上がるメリットが大きいので、\n12%は十分にペイできると判断しました。\n\n契約書を準備いたします。\nまた、最初のテストケースとして、\n弊社の既存クライアント1社で\n補助金申請を試しましょう。",
+      "stage": "negotiation",
+      "apis_used": [
+        {"api": "NegotiationEngine.build_negotiation_context()", "type": "local", "cost": 0},
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.05}
+      ]
+    },
+    {
+      "round": 9,
+      "direction": "inbound",
+      "subject": "Re: 条件合意 — 了承",
+      "body": "真鍋様\n\n8%で了承です。ありがとうございます。\n\n契約書、お待ちしております。\n弊社法務: legal@subsidy-pro-example.co.jp\n\nテストケースのクライアント情報をいただければ、\nすぐに補助金申請の準備に入れます。\n\nIT導入補助金の次回締切は6月30日ですので、\n早めに動けると良いですね。",
+      "stage": "contract",
+      "apis_used": [
+        {"api": "ConversationStateMachine.advance()", "type": "local", "description": "negotiation → contract"}
+      ]
+    },
+    {
+      "round": 10,
+      "direction": "outbound",
+      "subject": "Re: パートナー契約書送付",
+      "body": "高田様\n\nパートナー契約書をクラウドサインで送付しました。\nlegal@subsidy-pro-example.co.jp にもCCしております。\n\n主な条項：\n- 契約形態: 相互紹介パートナー\n- 手数料: 弊社→高田様12%（補助金採択額）/ 高田様→弊社8%（AI開発契約額）\n- 契約期間: 1年（自動更新）\n- 秘密保持: クライアント情報の相互保護\n\nテストケースのクライアント情報を別途お送りします。\n6月末の締切に間に合うよう進めましょう。",
+      "stage": "contract",
+      "apis_used": [
+        {"api": "ContractGenerator.generate()", "type": "jinja2", "template": "partnership.md.j2", "cost": 0},
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.05}
+      ]
+    },
+    {
+      "round": 11,
+      "direction": "inbound",
+      "subject": "テストケース — 補助金採択！",
+      "body": "真鍋様\n\n嬉しいご報告です！\nテストケースのクライアント様のIT導入補助金、\n採択されました！\n\n採択額: ¥300万円\n弊社手数料: ¥36万円\n\nクライアント様も大変喜ばれており、\n「補助金が使えるならぜひAI開発を進めたい」とのことです。\n\nこのスキームは非常にうまくいきそうですね。\n弊社からも早速2社ご紹介したい企業があります。",
+      "stage": "implementation",
+      "apis_used": [
+        {"api": "ConversationStateMachine.advance()", "type": "local", "description": "contract → implementation"}
+      ]
+    },
+    {
+      "round": 12,
+      "direction": "outbound",
+      "subject": "Re: 採択おめでとうございます！ — 請求書送付",
+      "body": "高田様\n\nテストケースの採択、おめでとうございます！\nそして弊社クライアントへのご尽力に感謝いたします。\n\n補助金手数料の請求書をお送りします：\n- 金額: ¥36万円（税別）/ ¥396,000（税込）\n- お支払い: クライアント様からの補助金入金後30日以内\n\n2社のご紹介、ぜひお願いいたします！\n弊社側からも来月2件のクライアントを\n補助金申請にお繋ぎする予定です。\n\nこのパートナーシップ、年間10件は\n軽く超えそうですね。\n\n引き続きよろしくお願いいたします。",
+      "stage": "billing",
+      "apis_used": [
+        {"api": "InvoiceGenerator.generate()", "type": "jinja2", "template": "invoice.md.j2", "cost": 0},
+        {"api": "LlmClient.generate_response()", "type": "openai", "model": "gpt-4o", "cost_usd": 0.05},
+        {"api": "DashboardSync.sync_all()", "type": "httpx", "cost": 0}
+      ]
+    }
+  ],
+  "api_summary": {
+    "total_api_calls": 16,
+    "openai_calls": 10,
+    "total_cost_usd": 0.48,
+    "total_cost_jpy": 72
+  },
+  "implementation_details": {
+    "new_features_required": [
+      {"name": "SubsidyIntegrator", "description": "補助金情報（種類・締切・補助率）をWebSearchで収集し、クライアント提案に自動組み込み", "api": "WebSearch + GPT-4o", "location": "src/mirror/documents/subsidy_calculator.py（新規）"},
+      {"name": "PartnerReferralTracker", "description": "相互紹介パートナーとの紹介件数・手数料を追跡するDB拡張", "location": "src/mirror/db.py に追加"}
+    ],
+    "key_insight": "補助金コンサルの営業を「自社コスト削減」ではなく「クライアントの予算ハードル引き下げ→受注率向上」のツールとして再定義。補助金で企業負担を1/3にすることで、「予算がない」を理由にした失注を激減させる。"
+  }
+}
